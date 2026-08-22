@@ -58,6 +58,9 @@ button { font-family:inherit; border:none; outline:none; cursor:pointer; touch-a
 #minimap { position:absolute; top:calc(64px + env(safe-area-inset-top)); right:calc(10px + env(safe-area-inset-right)); border-radius:50%; border:2px solid rgba(190,160,100,.4); background:rgba(14,11,7,.7); }
 
 #crosshair { position:absolute; left:50%; top:50%; width:0; height:0; --gap:7px; }
+#crosshair.enemy .ch-line { background:#ff5a40; box-shadow:0 0 6px rgba(255,60,30,.9); }
+.dmg-num { position:absolute; font-size:17px; font-weight:900; font-style:italic; color:#ffd890; text-shadow:0 2px 6px rgba(0,0,0,.95); pointer-events:none; will-change:transform,opacity; }
+.dmg-num.crit { color:#ff7a3a; font-size:21px; }
 .ch-line { position:absolute; background:rgba(240,230,200,.92); box-shadow:0 0 3px rgba(0,0,0,.9); transition:none; }
 .ch-t { width:2px; height:9px; left:-1px; top:calc(-1 * (var(--gap) + 9px)); }
 .ch-b { width:2px; height:9px; left:-1px; top:var(--gap); }

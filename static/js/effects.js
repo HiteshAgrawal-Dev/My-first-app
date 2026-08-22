@@ -73,12 +73,13 @@ export class Effects {
 
   setDensity(d) { this.density = d; }
 
-  tracer(from, to) {
+  tracer(from, to, color = 0xffd890) {
     const tr = this.tracers[this._trIdx++ % this.tracers.length];
     const len = from.distanceTo(to);
     tr.m.position.copy(from).add(to).multiplyScalar(0.5);
     tr.m.lookAt(to);
     tr.m.scale.set(0.02, 0.02, Math.max(0.1, len));
+    tr.m.material.color.setHex(color);
     tr.m.material.opacity = 0.9;
     tr.m.visible = true;
     tr.t = 0.07;

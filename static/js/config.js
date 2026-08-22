@@ -79,7 +79,7 @@ export function loadSettings() {
       preset: ['low', 'med', 'high'].includes(s.preset) ? s.preset : 'med'
     };
   } catch {}
-  return { sens: 1, invert: false, autofire: false, minimap: false, vol: 0.8, preset: 'med' };
+  return { sens: 1, invert: false, autofire: false, minimap: true, vol: 0.8, preset: 'med' };
 }
 export function saveSettings(s) {
   try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); } catch {}

@@ -1,3 +1,6 @@
+import * as THREE from 'three';
+import { clamp } from './util.js';
+
 const $ = id => document.getElementById(id);
 
 export class HUD {
@@ -23,6 +26,51 @@ export class HUD {
     this._buildCompass();
     this._bannerT = null;
     this._streakT = null;
+    this.dmgWrap = $('dmg-numbers');
+    this.dmgPool = [];
+    this.dmgItems = [];
+    for (let i = 0; i < 12; i++) {
+      const el = document.createElement('div');
+      el.className = 'dmg-num';
+      el.style.display = 'none';
+      this.dmgWrap.appendChild(el);
+      this.dmgPool.push(el);
+    }
+    this._v = new THREE.Vector3();
+  }
+
+  showDamage(pos, amount, crit) {
+    const el = this.dmgPool.find(e => e.style.display === 'none') || this.dmgPool[0];
+    el.textContent = crit ? Math.round(amount) + '!' : Math.round(amount);
+    el.className = 'dmg-num' + (crit ? ' crit' : '');
+    el.style.display = 'block';
+    this.dmgItems.push({ el, pos: pos.clone(), t: 0, tot: 0.8, rise: 0 });
+    if (this.dmgItems.length > 14) {
+      const old = this.dmgItems.shift();
+      old.el.style.display = 'none';
+    }
+  }
+
+  updateDamage(dt, camera, w, h) {
+    for (let i = this.dmgItems.length - 1; i >= 0; i--) {
+      const it = this.dmgItems[i];
+      it.t += dt;
+      it.rise += dt * 46;
+      if (it.t >= it.tot) {
+        it.el.style.display = 'none';
+        this.dmgItems.splice(i, 1);
+        continue;
+      }
+      this._v.copy(it.pos).project(camera);
+      if (this._v.z > 1 || this._v.z < -1) {
+        it.el.style.opacity = '0';
+        continue;
+      }
+      const sx = (this._v.x * 0.5 + 0.5) * w;
+      const sy = (-this._v.y * 0.5 + 0.5) * h - it.rise;
+      it.el.style.transform = `translate(${sx.toFixed(1)}px,${sy.toFixed(1)}px) translate(-50%,-100%)`;
+      it.el.style.opacity = String(clamp(1.6 - it.t / it.tot * 1.6, 0, 1));
+    }
   }
 
   _buildCompass() {
@@ -93,6 +141,7 @@ export class HUD {
     this.els.ammoWrap.classList.toggle('lowmag', mag <= 6);
   }
   crosshairAds(on) { this.els.crosshair.classList.toggle('ads', on); }
+  crosshairEnemy(on) { this.els.crosshair.classList.toggle('enemy', on); }
   setCrossGap(px) { this.els.crosshair.style.setProperty('--gap', px + 'px'); }
 
   hitmarker(kill) {

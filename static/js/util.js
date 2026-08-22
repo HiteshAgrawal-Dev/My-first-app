@@ -45,3 +45,36 @@ export function mergeGeometries(parts) {
   out.setAttribute('uv', new THREE.BufferAttribute(U, 2));
   return out;
 }
+
+export function mergeColored(parts) {
+  let total = 0;
+  const prepared = parts.map(p => {
+    const src = p.g.index ? p.g.toNonIndexed() : p.g.clone();
+    if (p.m) src.applyMatrix4(p.m);
+    total += src.attributes.position.count;
+    return { src, c: p.c || 0xffffff };
+  });
+  const P = new Float32Array(total * 3);
+  const N = new Float32Array(total * 3);
+  const C = new Float32Array(total * 3);
+  let off = 0;
+  for (const { src, c } of prepared) {
+    const n = src.attributes.position.count;
+    P.set(src.attributes.position.array, off * 3);
+    if (src.attributes.normal) N.set(src.attributes.normal.array, off * 3);
+    const col = new THREE.Color(c);
+    col.convertSRGBToLinear();
+    for (let i = 0; i < n; i++) {
+      C[(off + i) * 3] = col.r;
+      C[(off + i) * 3 + 1] = col.g;
+      C[(off + i) * 3 + 2] = col.b;
+    }
+    off += n;
+    src.dispose();
+  }
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', new THREE.BufferAttribute(P, 3));
+  out.setAttribute('normal', new THREE.BufferAttribute(N, 3));
+  out.setAttribute('color', new THREE.BufferAttribute(C, 3));
+  return out;
+}

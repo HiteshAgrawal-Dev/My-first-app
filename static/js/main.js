@@ -49,7 +49,7 @@ class Game {
     this.renderer.shadowMap.enabled = this.preset.shadows;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    this.renderer.toneMappingExposure = 1.06;
+    this.renderer.toneMappingExposure = 1.12;
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
 
     this.scene = new THREE.Scene();
@@ -84,6 +84,8 @@ class Game {
 
     this._resize();
     this.hud.loading(100);
+    this._crossEnemy = false;
+    try { this.renderer.compile(this.scene, this.camera); } catch {}
     this._lastT = performance.now();
     requestAnimationFrame(t => this._loop(t));
   }
@@ -147,21 +149,7 @@ class Game {
     });
     presetEl.addEventListener('change', () => {
       S.preset = presetEl.value;
-      this.preset = CFG.perf.presets[S.preset];
-      this.curDpr = Math.min(window.devicePixelRatio || 1, this.preset.dprCap);
-      this._applyDpr();
-      const wantShadows = this.preset.shadows;
-      if (wantShadows !== this.renderer.shadowMap.enabled) {
-        this.renderer.shadowMap.enabled = wantShadows;
-        this.world.sun.castShadow = wantShadows;
-        this.world.sun.shadow.mapSize.set(this.preset.shadowRes, this.preset.shadowRes);
-        if (this.world.sun.shadow.map) {
-          this.world.sun.shadow.map.dispose();
-          this.world.sun.shadow.map = null;
-        }
-        this.scene.traverse(o => { if (o.material) o.material.needsUpdate = true; });
-      }
-      this.effects.setDensity(this.preset.particles);
+      this._applyPreset(S.preset);
       persist();
     });
 
@@ -183,6 +171,26 @@ class Game {
     this.statsBox.style.cssText = 'position:absolute;left:10px;top:50px;z-index:20;background:rgba(0,0,0,.7);color:#9fe89f;font:11px monospace;padding:6px 8px;border-radius:4px;pointer-events:none;white-space:pre;';
     this.statsBox.textContent = 'STATS';
     $('hud').appendChild(this.statsBox);
+  }
+
+  _applyPreset(name) {
+    this.settings.preset = name;
+    this.preset = CFG.perf.presets[name] || CFG.perf.presets.med;
+    this.curDpr = Math.min(window.devicePixelRatio || 1, this.preset.dprCap);
+    this._applyDpr();
+    const wantShadows = this.preset.shadows;
+    if (wantShadows !== this.renderer.shadowMap.enabled) {
+      this.renderer.shadowMap.enabled = wantShadows;
+      this.world.sun.castShadow = wantShadows;
+      this.world.sun.shadow.mapSize.set(this.preset.shadowRes, this.preset.shadowRes);
+      if (this.world.sun.shadow.map) {
+        this.world.sun.shadow.map.dispose();
+        this.world.sun.shadow.map = null;
+      }
+      this.scene.traverse(o => { if (o.material) o.material.needsUpdate = true; });
+    }
+    this.effects.setDensity(this.preset.particles);
+    saveSettings(this.settings);
   }
 
   _applyDpr() {
@@ -262,6 +270,7 @@ class Game {
 
     for (const s of this.soldiers) this.respawnBot(s);
 
+    try { this.renderer.compile(this.scene, this.camera); } catch {}
     this.hud.overlay(['hud']);
     this.audio.deploy();
     this.state = 'playing';
@@ -422,7 +431,7 @@ class Game {
     for (const s of this.soldiers) {
       if (s.team !== 'militia' || s.dead) continue;
       const bp = s.position;
-      for (const [oy, r, isHead] of [[1.62, 0.26, true], [1.15, 0.46, false], [0.68, 0.4, false]]) {
+      for (const [oy, r, isHead] of [[1.56, 0.25, true], [1.18, 0.44, false], [0.7, 0.36, false]]) {
         const cx = bp.x, cy = oy, cz = bp.z;
         const vx = cx - origin.x, vy = cy - origin.y, vz = cz - origin.z;
         const proj = vx * dir.x + vy * dir.y + vz * dir.z;
@@ -451,6 +460,7 @@ class Game {
       }
       const killed = hitSoldier.takeDamage(dmg, this.player.position);
       this.effects.burst(hitPoint, dir.clone().negate(), 'flesh');
+      this.hud.showDamage(hitPoint, dmg, headshot);
       this.hud.hitmarker(killed);
       this.audio.hit(headshot);
       if (killed) {
@@ -493,12 +503,9 @@ class Game {
   }
 
   _autoFireScan(dt) {
-    this._autoScanT -= dt;
-    if (this._autoScanT > 0 || !this.settings.autofire) {
-      if (!this.settings.autofire) this._autoFire = false;
-      return;
-    }
-    this._autoScanT = 0.18;
+    this._scanT = (this._scanT || 0) - dt;
+    if (this._scanT > 0) return;
+    this._scanT = 0.12;
     const origin = this.camera.getWorldPosition(this._v2);
     const dir = this._v3.set(0, 0, -1).applyQuaternion(this.camera.quaternion);
     let found = false;
@@ -507,11 +514,12 @@ class Game {
       const bp = s.position;
       const vx = bp.x - origin.x, vy = 1.2 - origin.y, vz = bp.z - origin.z;
       const d = Math.hypot(vx, vy, vz);
-      if (d > 65) continue;
+      if (d > 70) continue;
       const dot = (vx * dir.x + vy * dir.y + vz * dir.z) / d;
-      if (dot > 0.997) { found = true; break; }
+      if (dot > 0.9986) { found = true; break; }
     }
-    this._autoFire = found;
+    this._crossEnemy = found;
+    this._autoFire = found && this.settings.autofire;
   }
 
   _checkWin() {
@@ -552,6 +560,15 @@ class Game {
     this.time += dt;
 
     this._perfSample(dt);
+    if (this._avgMs > 0 && this.state === 'playing') {
+      this._playSec = (this._playSec || 0) + dt;
+      if (!this._lowForced && this._playSec > 8 && this._avgMs > 24.5 && this.settings.preset !== 'low') {
+        this._lowForced = true;
+        $('set-preset').value = 'low';
+        this._applyPreset('low');
+        this.hud.streakBanner('PERFORMANCE MODE: LOW');
+      }
+    }
 
     if (this.state === 'menu') {
       const a = this.time * 0.07;
@@ -611,7 +628,9 @@ class Game {
     this.world.followPlayer(this.player.position.x, this.player.position.z);
 
     this.hud.crosshairAds(this.weapon._adsT > 0.6);
+    this.hud.crosshairEnemy(this._crossEnemy && !this.player.dead);
     this.hud.vitals(this.player.hp);
+    this.hud.updateDamage(dt, this.camera, innerWidth, innerHeight);
     const gap = 7 + this.weapon.bloom * 22 * (1 - this.weapon._adsT * 0.65) + Math.min(10, this.player.speed2D * 1.1);
     this.hud.setCrossGap(gap);
     this.hud.ammo(this.weapon.mag, this.weapon.reserve, this.weapon.reloading);

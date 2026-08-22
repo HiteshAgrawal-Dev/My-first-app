@@ -75,9 +75,9 @@ export class World {
   _build() {
     const scene = this.scene;
 
-    scene.fog = new THREE.Fog(0xdcc49c, 42, 185);
-    scene.add(new THREE.HemisphereLight(0xcfd8e8, 0x8a7048, 0.9));
-    const sun = new THREE.DirectionalLight(0xffe4b8, 2.3);
+    scene.fog = new THREE.Fog(0xdcc49c, 50, 215);
+    scene.add(new THREE.HemisphereLight(0xcfd8e8, 0x8a7048, 0.95));
+    const sun = new THREE.DirectionalLight(0xffe4b8, 2.35);
     sun.position.set(60, 90, 30);
     sun.castShadow = true;
     sun.shadow.mapSize.set(1024, 1024);
@@ -357,6 +357,98 @@ export class World {
     }
     scene.add(shrubIM);
 
+    const palletIM = new THREE.InstancedMesh(
+      new THREE.BoxGeometry(1.25, 0.12, 1.25), this.matWood, 16
+    );
+    palletIM.castShadow = true; palletIM.receiveShadow = true;
+    for (let i = 0; i < 16; i++) {
+      const a = Math.random() * Math.PI * 2, r = 12 + Math.random() * 48;
+      dummy.position.set(Math.cos(a) * r, 0.06, Math.sin(a) * r);
+      dummy.rotation.set(0, rand(0, 6.3), 0);
+      dummy.scale.setScalar(1);
+      dummy.updateMatrix();
+      palletIM.setMatrixAt(i, dummy.matrix);
+    }
+    scene.add(palletIM);
+
+    const tireIM = new THREE.InstancedMesh(
+      new THREE.TorusGeometry(0.42, 0.16, 6, 12),
+      new THREE.MeshStandardMaterial({ color: 0x24221f, roughness: 0.95 }), 9
+    );
+    tireIM.castShadow = true;
+    for (let i = 0; i < 9; i++) {
+      const a = Math.random() * Math.PI * 2, r = 14 + Math.random() * 44;
+      dummy.position.set(Math.cos(a) * r, 0.17, Math.sin(a) * r);
+      dummy.rotation.set(Math.PI / 2, 0, rand(0, 6.3));
+      dummy.scale.setScalar(1);
+      dummy.updateMatrix();
+      tireIM.setMatrixAt(i, dummy.matrix);
+    }
+    scene.add(tireIM);
+
+    const ammoMat = new THREE.MeshStandardMaterial({ color: 0x44523a, roughness: 0.8 });
+    for (const [ax, az, ry] of [[-42, -38, 0.4], [-43.2, -36.6, -0.2], [-42.6, -37.3, 1.1]]) {
+      const crate = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.55, 0.7), ammoMat);
+      crate.position.set(ax, 0.28, az);
+      crate.rotation.y = ry;
+      crate.castShadow = true; crate.receiveShadow = true;
+      scene.add(crate);
+      this.addBoxCol(ax, az, 1.1, 0.7, 0.55, 0, ry);
+    }
+
+    this.fires = [];
+    const flameTex = TEX.flashTexture();
+    for (const [fx, fz] of [[-2, 8], [54, 12], [-26, -36]]) {
+      const drum = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.42, 0.42, 1.0, 10),
+        new THREE.MeshStandardMaterial({ color: 0x3a3630, roughness: 0.7, metalness: 0.4 })
+      );
+      drum.position.set(fx, 0.5, fz);
+      drum.castShadow = true;
+      scene.add(drum);
+      const flame = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: flameTex, color: 0xff9030, transparent: true,
+        blending: THREE.AdditiveBlending, depthWrite: false
+      }));
+      flame.position.set(fx, 1.35, fz);
+      flame.scale.set(0.9, 1.3, 1);
+      scene.add(flame);
+      const light = new THREE.PointLight(0xff8030, 16, 10, 2);
+      light.position.set(fx, 1.5, fz);
+      scene.add(light);
+      this.fires.push({ flame, light, seed: Math.random() * 10 });
+      this.addBoxCol(fx, fz, 0.9, 0.9, 1.0);
+    }
+
+    const mastX = 0, mastZ = -52;
+    const mast = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.14, 0.2, 15, 8),
+      new THREE.MeshStandardMaterial({ color: 0x5a5a52, roughness: 0.6, metalness: 0.6 })
+    );
+    mast.position.set(mastX, 7.5, mastZ);
+    mast.castShadow = true;
+    scene.add(mast);
+    this.mastBeacon = new THREE.Mesh(
+      new THREE.SphereGeometry(0.28, 8, 6),
+      new THREE.MeshBasicMaterial({ color: 0xff2a1a, fog: false })
+    );
+    this.mastBeacon.position.set(mastX, 15.2, mastZ);
+    scene.add(this.mastBeacon);
+    this.addBoxCol(mastX, mastZ, 0.5, 0.5, 15);
+
+    this.clouds = [];
+    const cloudTex = TEX.smokeTexture();
+    for (let i = 0; i < 7; i++) {
+      const cl = new THREE.Sprite(new THREE.SpriteMaterial({
+        map: cloudTex, color: 0xf2e8d8, transparent: true,
+        opacity: rand(0.2, 0.34), depthWrite: false, fog: false
+      }));
+      cl.position.set(rand(-170, 170), rand(62, 96), rand(-170, 170));
+      cl.scale.set(rand(60, 115), rand(22, 40), 1);
+      scene.add(cl);
+      this.clouds.push(cl);
+    }
+
     const adobeMesh = new THREE.Mesh(mergeGeometries(adobeParts), matAdobe);
     adobeMesh.castShadow = true; adobeMesh.receiveShadow = true;
     scene.add(adobeMesh);
@@ -547,6 +639,17 @@ export class World {
   update(dt, t) {
     this.dust.rotation.y = t * 0.008;
     this.dust.position.y = Math.sin(t * 0.3) * 0.4;
+    for (const f of this.fires) {
+      const n = 0.85 + Math.sin(t * 12 + f.seed * 7) * 0.1 + Math.sin(t * 23 + f.seed * 3) * 0.06;
+      f.flame.scale.set(0.9 * n, 1.3 * (2 - n), 1);
+      f.light.intensity = 14 + n * 6;
+    }
+    this.mastBeacon.visible = (t % 1.4) < 0.7;
+    for (let i = 0; i < this.clouds.length; i++) {
+      const cl = this.clouds[i];
+      cl.position.x += dt * (1.1 + i * 0.15);
+      if (cl.position.x > 185) cl.position.x = -185;
+    }
   }
 
   followPlayer(px, pz) {
