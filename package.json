@@ -1,0 +1,25 @@
+{
+  "name": "desert-strike",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "description": "",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://x-access-token:kgh2.1LgSDmXYsRyQIymPdiU3qg%3D%3D%3ASGxGJQFFox00qNOH1YCTCw%3D%3D%3AnxjBsknUojuj8Tl9Mes63D9MizQMdfMsvrZiqYi7xVZ0WaHVD%2FtphhutjBOXC+KmKKPKDEiUFPPA%2Fag0mR7oRcVxQOd9po5Tj+YIXfnUCpzcgdTmX+r8xW12L906kg1au6dummsM7rfuB%2F6zzgDubSGE4AAcojuLGp28ZEsa25yR%2FtvlfpyEwI81yqrVfqzNsC6C2WEifopUNURXjHOGmuqy6+cdI%2F2ppRGfM898FkAuBo0f+TL0yhrl3YiMCWmqZC67UhmU5qx0006DDDh918hfTp+RHBotZohTcNs6CldNtEipiUkSolYuc8RohYN3YkcH8gBGblZrCkvi6qKcwRh+vvW21fqJSzdOVBQ0dW9vY90PKQWsgZko54toTCn+y%2FgJc+cPO5s4hrg80cJ6IjWvyMsrweonX3IENuwnyf9zVjijgapuAOm4QdROlEbmSfko0+mThi4WLUeR9XL%2F917xTg8AFKHQ3ISaDPlg%2Fwx7IN2JCcvdmZMPRPiHmxgJ0AIW+vDwvBBeK38kuIhpSdLkBAVClTI0gFuofD+LwaIRUeEivn1fdYByH3rPV2SnHcWoCexMxw4ElZFIuYlowhhJf2t0tUXzXSC+g6qM7yDIZrjeteas7%2F7wYhsJctTS%2FCokxFKeSNXudj5KU5N6VIfpurphj5srjXQ%3D@github.com/HiteshAgrawal-Dev/My-first-app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HiteshAgrawal-Dev/My-first-app/issues"
+  },
+  "homepage": "https://github.com/HiteshAgrawal-Dev/My-first-app#readme",
+  "dependencies": {
+    "canvas": "^3.2.3",
+    "jsdom": "^30.0.1"
+  }
+}

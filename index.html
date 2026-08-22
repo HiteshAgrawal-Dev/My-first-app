@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#141008">
+<title>DESERT STRIKE — Mobile FPS</title>
+<link rel="stylesheet" href="/static/css/game.css">
+<script type="importmap">
+{ "imports": { "three": "/static/js/lib/three.module.min.js" } }
+</script>
+</head>
+<body>
+<div id="game-container">
+  <canvas id="game-canvas"></canvas>
+
+  <div id="menu-screen" class="overlay-screen">
+    <div class="menu-bg-vignette"></div>
+    <div class="menu-content">
+      <div class="menu-logo">
+        <span class="logo-top">DESERT</span>
+        <span class="logo-main">STRIKE</span>
+        <span class="logo-sub">TEAM DEATHMATCH &mdash; CANYON OUTPOST</span>
+      </div>
+      <button id="btn-play" class="menu-btn primary"><span>FIND A MATCH</span></button>
+      <div class="menu-hint">Best played in landscape &middot; Touch &amp; Mouse/KB supported</div>
+      <div class="menu-teams">
+        <span class="team-tag rangers">RANGERS</span><span class="vs">VS</span><span class="team-tag militia">MILITIA</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="loading-screen" class="overlay-screen hidden">
+    <div class="loading-inner">
+      <div class="loading-title">DEPLOYING TO CANYON OUTPOST</div>
+      <div class="loading-bar-track"><div id="loading-bar" class="loading-bar-fill"></div></div>
+      <div class="loading-tip" id="loading-tip"></div>
+    </div>
+  </div>
+
+  <div id="hud" class="hidden">
+    <div id="hud-top">
+      <button id="btn-pause" class="corner-btn" title="Pause">&#10073;&#10073;</button>
+      <div class="score-block rangers"><span class="score-team">RANGERS</span><span class="score-num" id="score-rangers">0</span></div>
+      <div id="compass-wrap">
+        <div id="compass-ruler"></div>
+        <div id="compass-pings"></div>
+        <div id="compass-center"></div>
+      </div>
+      <div class="timer-block"><span id="match-timer">10:00</span></div>
+      <div class="score-block militia"><span class="score-num" id="score-militia">0</span><span class="score-team">MILITIA</span></div>
+      <button id="btn-board" class="corner-btn" title="Scoreboard">&#9776;</button>
+    </div>
+
+    <canvas id="minimap" width="132" height="132" class="hidden"></canvas>
+
+    <div id="crosshair">
+      <div class="ch-line ch-t"></div><div class="ch-line ch-b"></div>
+      <div class="ch-line ch-l"></div><div class="ch-line ch-r"></div>
+      <div class="ch-dot"></div>
+    </div>
+    <div id="hitmarker">
+      <div class="hm-line hm1"></div><div class="hm-line hm2"></div>
+      <div class="hm-line hm3"></div><div class="hm-line hm4"></div>
+    </div>
+
+    <div id="killfeed"></div>
+
+    <div id="hud-vitals">
+      <div class="vitals-label">VITALS <span id="health-num">100</span></div>
+      <div class="vitals-track"><div id="health-bar"></div></div>
+    </div>
+
+    <div id="hud-ammo">
+      <div class="ammo-weapon">AK-47</div>
+      <div class="ammo-count"><span id="ammo-mag">30</span><span class="ammo-sep">/</span><span id="ammo-reserve">150</span></div>
+      <div class="ammo-reload hidden" id="reload-label">RELOADING&hellip;</div>
+    </div>
+
+    <div id="damage-vignette"></div>
+    <div id="lowhp-vignette"></div>
+    <div id="dmg-dir"></div>
+    <div id="kill-banner" class="hidden"></div>
+    <div id="streak-banner" class="hidden"></div>
+
+    <div id="touch-controls">
+      <div id="stick-zone"><div id="stick-base"><div id="stick-knob"></div></div></div>
+      <div id="look-zone"></div>
+      <button id="btn-fire" class="tbtn big"><span>&#9673;</span></button>
+      <button id="btn-ads" class="tbtn"><span>&#8962;</span></button>
+      <button id="btn-reload" class="tbtn"><span>&#8635;</span></button>
+      <button id="btn-jump" class="tbtn"><span>&#9650;</span></button>
+      <button id="btn-sprint" class="tbtn"><span>&#187;</span></button>
+    </div>
+
+    <div id="kb-hints">WASD move &middot; MOUSE aim &middot; LMB fire &middot; RMB ADS &middot; R reload &middot; SPACE jump &middot; SHIFT sprint &middot; ESC pause</div>
+  </div>
+
+  <div id="pause-screen" class="overlay-screen hidden">
+    <div class="pause-panel">
+      <div class="pause-title">PAUSED</div>
+      <button id="btn-resume" class="menu-btn primary"><span>RESUME</span></button>
+      <div class="set-row"><label>Sensitivity</label><input type="range" id="set-sens" min="30" max="200" value="100"><span id="set-sens-val">1.0</span></div>
+      <div class="set-row"><label>Invert Y</label><input type="checkbox" id="set-invert"></div>
+      <div class="set-row"><label>Auto-fire</label><input type="checkbox" id="set-autofire"></div>
+      <div class="set-row"><label>Minimap</label><input type="checkbox" id="set-minimap"></div>
+      <div class="set-row"><label>Graphics</label>
+        <select id="set-preset"><option value="low">LOW</option><option value="med" selected>MEDIUM</option><option value="high">HIGH</option></select>
+      </div>
+      <div class="set-row"><label>Volume</label><input type="range" id="set-vol" min="0" max="100" value="80"><span id="set-vol-val">80</span></div>
+      <button id="btn-quit" class="menu-btn danger"><span>QUIT MATCH</span></button>
+    </div>
+  </div>
+
+  <div id="board-screen" class="overlay-screen hidden">
+    <div class="board-panel">
+      <div class="board-title">SCOREBOARD</div>
+      <div class="board-cols"><span>OPERATOR</span><span>TEAM</span><span>KILLS</span><span>DEATHS</span></div>
+      <div id="board-rows"></div>
+      <button id="btn-board-close" class="menu-btn primary small"><span>CLOSE</span></button>
+    </div>
+  </div>
+
+  <div id="death-screen" class="overlay-screen hidden">
+    <div class="death-title">YOU WERE ELIMINATED</div>
+    <div class="death-sub" id="death-by">by MILITIA RIFLEMAN</div>
+    <div class="death-respawn">Respawning in <span id="respawn-count">3</span>&hellip;</div>
+  </div>
+
+  <div id="end-screen" class="overlay-screen hidden">
+    <div class="end-result" id="end-result">VICTORY</div>
+    <div class="end-score" id="end-score"></div>
+    <div class="end-mvp" id="end-mvp"></div>
+    <div class="end-stats" id="end-stats"></div>
+    <button id="btn-again" class="menu-btn primary"><span>PLAY AGAIN</span></button>
+  </div>
+
+  <div id="rotate-prompt" class="hidden"><div class="rotate-inner">&#10227;<br>ROTATE YOUR DEVICE<br><span>Landscape mode required</span></div></div>
+  <div id="err-toast" class="hidden"></div>
+</div>
+<script type="module" src="/static/js/main.js"></script>
+</body>
+</html>
