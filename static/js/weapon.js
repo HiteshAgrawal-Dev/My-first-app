@@ -233,7 +233,7 @@ export class Weapon {
     }
 
     const targetAds = this.ads && !this.reloading && this._sprintT < 0.4 ? 1 : 0;
-    this._adsT += (targetAds - this._adsT) * Math.min(1, dt * 11);
+    this._adsT += (targetAds - this._adsT) * Math.min(1, dt * 13);
 
     const sprintTarget = this.sprinting && !targetAds && !this.reloading ? 1 : 0;
     this._sprintT += (sprintTarget - this._sprintT) * Math.min(1, dt * 8);
@@ -246,7 +246,7 @@ export class Weapon {
       this.flashLight.intensity = 0;
     }
 
-    this._recoilKick = Math.max(0, this._recoilKick - dt * 9);
+    this._recoilKick = Math.max(0, this._recoilKick - dt * 11);
     this._bobT += dt * (grounded ? moveSpeed * 1.85 : 0);
     const bobAmt = lerp(0.011, 0.002, this._adsT) * Math.min(1, moveSpeed / 4);
     const bobX = Math.sin(this._bobT * 2) * bobAmt;

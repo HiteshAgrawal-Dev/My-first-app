@@ -218,10 +218,10 @@ export class Soldier {
     const aimK = this.combat ? 1 : 0;
     const recoil = Math.max(0, this.recoilT) / 0.09;
     this.recoilT = Math.max(0, this.recoilT - dt);
-    const targetArmR = -1.28 + this.aimPitch * aimK - recoil * 0.22;
-    const targetArmL = -1.05 + this.aimPitch * aimK * 0.8;
+    const targetArmR = 0.55 + 0.5 * aimK - this.aimPitch * aimK * 0.9 - recoil * 0.25;
+    const targetArmL = 0.85 + 0.35 * aimK - this.aimPitch * aimK * 0.85 + swing * 0.12 * (1 - aimK);
     this.armR.rotation.x += (targetArmR - this.armR.rotation.x) * Math.min(1, dt * 10);
-    this.armL.rotation.x += (targetArmL + swing * 0.1 * (1 - aimK) - this.armL.rotation.x) * Math.min(1, dt * 10);
+    this.armL.rotation.x += (targetArmL - this.armL.rotation.x) * Math.min(1, dt * 10);
 
     const d = this.position.distanceTo(game.player.position);
     if (this.team === 'rangers') {
@@ -522,8 +522,8 @@ class AIController {
         if (s.team === 'rangers' && game.difficulty.assistPlayer && Math.random() < 0.45 && game.state === 'playing') {
           const px = game.player.position.x, pz = game.player.position.z;
           this.wander = new THREE.Vector3(
-            clamp(px + rand(-18, 18), -50, 50), 0,
-            clamp(pz + rand(-18, 18), -50, 50)
+            clamp(px + rand(-18, 18), -47, 47), 0,
+            clamp(pz + rand(-18, 18), -47, 47)
           );
         } else {
           this.wander = this.world.randomNode().clone();

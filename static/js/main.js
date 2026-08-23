@@ -653,15 +653,16 @@ class Game {
       for (const s of this.soldiers) {
         if (s.dead) continue;
         const arr = s.team === 'rangers' ? allies : enemies;
-        arr.push([(s.position.x - this.player.position.x) * 0.92, (s.position.z - this.player.position.z) * 0.92]);
+        arr.push([s.position.x, s.position.z]);
       }
       this._mmFrame = (this._mmFrame || 0) + 1;
       if (this._mmFrame % 3 === 0) {
-        const px = this.player.position.x, pz = this.player.position.z;
         this.hud.minimapDraw({
           yaw: this.controls.yaw,
+          px: this.player.position.x,
+          pz: this.player.position.z,
           allies, enemies,
-          obstacles: this._minimapObstacles.map(o => [(o[0] - px) * 0.92, (o[1] - pz) * 0.92, o[2] * 0.92, o[3] * 0.92])
+          obstacles: this._minimapObstacles
         });
       }
     }

@@ -472,12 +472,64 @@ export class World {
 
     this.spawnsRangers = [
       new THREE.Vector3(-46, 0, -42), new THREE.Vector3(-52, 0, -30), new THREE.Vector3(-40, 0, -50)
-    ].filter(v => { let ok = !this.pointBlocked(v.x, v.z, 0.8); return ok; });
+    ].filter(v => !this.pointBlocked(v.x, v.z, 0.8));
     if (!this.spawnsRangers.length) this.spawnsRangers.push(new THREE.Vector3(-46, 0, -42));
     this.spawnsMilitia = [
       new THREE.Vector3(44, 0, 40), new THREE.Vector3(48, 0, 28), new THREE.Vector3(40, 0, 48)
     ].filter(v => !this.pointBlocked(v.x, v.z, 0.8));
-    if (!this.spawnsMilitia.length) this.spawnsMilitia.push(new THREE.Vector3(46, 0, 42));
+    if (!this.spawnsMilitia.length) this.spawnsMilitia.push(new THREE.Vector3(44, 0, 40));
+
+    const WR = CFG.arena.wallR;
+    const SEG = 72;
+    const wallGeo = new THREE.BoxGeometry(1.1, 1.8, 4.9);
+    const wallIM = new THREE.InstancedMesh(wallGeo, this.matWood, SEG);
+    wallIM.castShadow = true; wallIM.receiveShadow = true;
+    for (let i = 0; i < SEG; i++) {
+      const a = (i / SEG) * Math.PI * 2;
+      const wx = Math.cos(a) * WR, wz = Math.sin(a) * WR;
+      dummy.position.set(wx, 0.9, wz);
+      dummy.rotation.set(0, -a, 0);
+      dummy.scale.setScalar(1);
+      dummy.updateMatrix();
+      wallIM.setMatrixAt(i, dummy.matrix);
+      this.addBoxCol(wx, wz, 1.1, 4.9, 1.8, 0, -a);
+    }
+    scene.add(wallIM);
+    this.shootables.push(wallIM);
+
+    const zoneSpec = [
+      { cx: -45, cz: -40, color: 0x3f7a34, cloth: 0x59c24a },
+      { cx: 45, cz: 40, color: 0x7a2a1c, cloth: 0xd83a22 }
+    ];
+    for (const zs of zoneSpec) {
+      const patch = new THREE.Mesh(
+        new THREE.CircleGeometry(10, 24),
+        new THREE.MeshBasicMaterial({ color: zs.color, transparent: true, opacity: 0.22, depthWrite: false })
+      );
+      patch.rotation.x = -Math.PI / 2;
+      patch.position.set(zs.cx, 0.02, zs.cz);
+      patch.renderOrder = 1;
+      scene.add(patch);
+      for (let f = 0; f < 3; f++) {
+        const fa = (f / 3) * Math.PI * 2 + 0.6;
+        const fx = zs.cx + Math.cos(fa) * 7, fz = zs.cz + Math.sin(fa) * 7;
+        const pole = new THREE.Mesh(
+          new THREE.CylinderGeometry(0.06, 0.08, 4.2, 6),
+          this.matWood
+        );
+        pole.position.set(fx, 2.1, fz);
+        pole.castShadow = true;
+        scene.add(pole);
+        const cloth = new THREE.Mesh(
+          new THREE.PlaneGeometry(1.5, 0.95),
+          new THREE.MeshBasicMaterial({ color: zs.cloth, side: THREE.DoubleSide })
+        );
+        cloth.position.set(fx + 0.78, 3.7, fz);
+        cloth.rotation.y = rand(0, 6.3);
+        scene.add(cloth);
+        this.addBoxCol(fx, fz, 0.3, 0.3, 4.2);
+      }
+    }
 
     this._v1 = new THREE.Vector3();
     this._v2 = new THREE.Vector3();
@@ -514,14 +566,14 @@ export class World {
   }
 
   _buildNav() {
-    const N = 15, span = 111, step = span / (N - 1);
+    const N = 15, span = 104, step = span / (N - 1);
     const xs = [], zs = [], idx = [];
     const idOf = {};
     for (let i = 0; i < N; i++) {
       for (let j = 0; j < N; j++) {
         const x = -span / 2 + i * step, z = -span / 2 + j * step;
         idx[i * N + j] = -1;
-        if (Math.hypot(x, z) > 55) continue;
+        if (Math.hypot(x, z) > 51) continue;
         if (this.pointBlocked(x, z, 1.15)) continue;
         idx[i * N + j] = xs.length;
         idOf[xs.length] = [i, j];
@@ -622,7 +674,7 @@ export class World {
   randomNode() {
     for (let tries = 0; tries < 12; tries++) {
       const n = this.navNodes[(Math.random() * this.navNodes.length) | 0];
-      if (Math.hypot(n.x, n.z) < 50) return n;
+      if (Math.hypot(n.x, n.z) < 48) return n;
     }
     return this.navNodes[0];
   }

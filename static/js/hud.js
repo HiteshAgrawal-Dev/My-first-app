@@ -194,38 +194,44 @@ export class HUD {
     setTimeout(() => el.remove(), 800);
   }
 
-  minimapDraw(data) {
+  minimapDraw(d) {
     if (!this.settings.minimap) return;
     const c = this.minimapCtx, S = 132, R = S / 2;
+    const s = (R - 4) / 58;
+    const ox = R - d.px * s, oy = R - d.pz * s;
     c.clearRect(0, 0, S, S);
     c.save();
     c.beginPath(); c.arc(R, R, R - 2, 0, 7); c.clip();
-    c.fillStyle = 'rgba(20,16,10,0.85)';
+    c.fillStyle = 'rgba(22,18,12,0.88)';
     c.fillRect(0, 0, S, S);
-    const scale = (R - 4) / 60;
-    c.strokeStyle = 'rgba(200,170,110,0.35)';
-    c.strokeRect(R - 57 * scale, R - 57 * scale, 114 * scale, 114 * scale);
-    for (const o of data.obstacles) {
-      c.fillStyle = 'rgba(160,140,100,0.4)';
-      c.fillRect(R + o[0] * scale, R + o[1] * scale, Math.max(1.5, o[2] * scale), Math.max(1.5, o[3] * scale));
+    for (const o of d.obstacles) {
+      c.fillStyle = 'rgba(170,148,104,0.42)';
+      c.fillRect(ox + o[0] * s, oy + o[1] * s, Math.max(1.5, o[2] * s), Math.max(1.5, o[3] * s));
     }
-    for (const a of data.allies) {
-      c.fillStyle = '#8ee08a';
-      c.beginPath(); c.arc(R + a[0] * scale, R + a[1] * scale, 3, 0, 7); c.fill();
+    c.strokeStyle = 'rgba(232,200,120,0.95)';
+    c.lineWidth = 2.5;
+    c.beginPath(); c.arc(ox, oy, 55 * s, 0, 7); c.stroke();
+    for (const a of d.allies) {
+      c.fillStyle = '#7ee06a';
+      c.beginPath(); c.arc(ox + a[0] * s, oy + a[1] * s, 3, 0, 7); c.fill();
     }
-    for (const en of data.enemies) {
-      c.fillStyle = '#ff5a40';
-      c.beginPath(); c.arc(R + en[0] * scale, R + en[1] * scale, 3, 0, 7); c.fill();
+    for (const en of d.enemies) {
+      c.fillStyle = '#ff5030';
+      c.beginPath(); c.arc(ox + en[0] * s, oy + en[1] * s, 3, 0, 7); c.fill();
     }
     c.save();
     c.translate(R, R);
-    c.rotate(-data.yaw);
+    c.rotate(-d.yaw);
     c.fillStyle = '#ffe8b0';
     c.beginPath();
-    c.moveTo(0, -6); c.lineTo(4.5, 5); c.lineTo(-4.5, 5);
+    c.moveTo(0, -7); c.lineTo(5, 6); c.lineTo(-5, 6);
     c.closePath(); c.fill();
     c.restore();
     c.restore();
+    c.fillStyle = 'rgba(240,228,189,0.95)';
+    c.font = '900 11px Arial';
+    c.textAlign = 'center';
+    c.fillText('N', R, 12);
   }
 
   scoreboard(rows, myName) {
