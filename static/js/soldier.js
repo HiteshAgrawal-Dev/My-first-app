@@ -18,7 +18,7 @@ const PALETTES = {
     shirt: 0x77603f, shirtDark: 0x614d33, pants: 0x5c4a32, pantsDark: 0x4c3c28,
     vest: 0x3c2f22, plate: 0x4a3a2a, pouch: 0x302518, belt: 0x2a2118,
     helmet: 0x2e2118, helmetBand: 0xb8351c, nvg: 0x000000,
-    pack: 0x000000, roll: 0x6e5b3d, radio: 0x000000,
+    pack: 0x000000, roll: 0x6e5b3d, radio: 0x33291c,
     skin: 0xa8794f, gloves: 0x000000, boots: 0x241f18, knee: 0x4c3c28,
     gun: 0x22241c, gunWood: 0x6e4322, gunMetal2: 0x2c2e24, tacLight: 0x000000,
     patch: 0xc23a20, strap: 0x33291c
@@ -231,7 +231,7 @@ function makeMarker(team, name) {
     fog: false
   }));
   spr.scale.set(team === 'rangers' ? 1.15 : 0.55, team === 'rangers' ? 0.32 : 0.155, 1);
-  spr.position.y = 2.14;
+  spr.position.y = 2.06;
   spr.renderOrder = team === 'rangers' ? 5 : 2;
   return spr;
 }

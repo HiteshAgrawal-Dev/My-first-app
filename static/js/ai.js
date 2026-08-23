@@ -69,10 +69,15 @@ export class Soldier {
     this.root.position.copy(this.position);
     this.body.position.y = 0;
     this.body.rotation.set(0, 0, 0);
+    this.head.rotation.set(0, 0, 0);
     this.legL.rotation.x = 0;
     this.legR.rotation.x = 0;
     this.armL.rotation.set(0, 0, 0);
     this.armR.rotation.set(0, 0, 0);
+    this.planarSpeed = 0;
+    this.velX = 0;
+    this.velZ = 0;
+    this.planted = false;
     const a = this.ai;
     a.hasTarget = false;
     a.visibleTarget = false;
@@ -289,10 +294,11 @@ export class Soldier {
 
     this._prev.copy(this.position);
     this.ai.update(dt, game);
-    this.planarSpeed = Math.hypot(
-      this.position.x - this._prev.x,
-      this.position.z - this._prev.z
-    ) / Math.max(dt, 0.001);
+    const dxm = this.position.x - this._prev.x;
+    const dzm = this.position.z - this._prev.z;
+    this.planarSpeed = Math.hypot(dxm, dzm) / Math.max(dt, 0.001);
+    this.velX = dxm / Math.max(dt, 0.001);
+    this.velZ = dzm / Math.max(dt, 0.001);
 
     this._animate(dt, game);
 
@@ -332,6 +338,10 @@ class AIController {
     this.coverPoint = null;
     this.strafeDir = Math.random() > 0.5 ? 1 : -1;
     this.strafeT = rand(1, 2);
+    this.strafeVX = 0;
+    this.strafeVZ = 0;
+    this.reactionT = 0;
+    this.prevVisible = false;
     this._v = new THREE.Vector3();
     this._v2b = new THREE.Vector3();
   }
@@ -448,10 +458,9 @@ class AIController {
         this.stuckT = 0;
         this.path = null;
         this.repathT = 0;
-        this.s.yaw += (Math.random() > 0.5 ? 1 : -1) * rand(0.9, 1.9);
         const side = Math.random() > 0.5 ? 1 : -1;
-        this.pos.x += Math.cos(this.s.yaw) * 0.55 * side;
-        this.pos.z -= Math.sin(this.s.yaw) * 0.55 * side;
+        this.pos.x += Math.cos(this.s.yaw) * 0.3 * side;
+        this.pos.z -= Math.sin(this.s.yaw) * 0.3 * side;
         this.world.collide(this.pos, 0.5);
       }
     } else {
@@ -473,15 +482,11 @@ class AIController {
     this.fireCool -= dt;
     this.burstPause -= dt;
     this.repathT -= dt;
-    this.strafeT -= dt;
-    if (this.strafeT <= 0) {
-      this.strafeT = rand(1.2, 2.6);
-      this.strafeDir *= -1;
-    }
 
     let moveSpeed = b.speedPatrol;
     s.combat = false;
     s.advancing = false;
+    s.planted = false;
     const wantCover = s.reloading || s.hp < b.lowHP;
 
     if (wantCover) {
@@ -510,6 +515,7 @@ class AIController {
     } else if (this.hasTarget && this.visibleTarget) {
       this.state = STATE.COMBAT;
       s.combat = true;
+      if (!this.prevVisible) this.reactionT = rand(0.22, 0.55);
       const dist = Math.hypot(this.targetPos.x - this.pos.x, this.targetPos.z - this.pos.z);
       const targetYaw = Math.atan2(this.targetPos.x - this.pos.x, this.targetPos.z - this.pos.z);
       const dyaw = wrapAngle(targetYaw - s.yaw);
@@ -520,13 +526,30 @@ class AIController {
       let advX = 0, advZ = 0;
       if (dist > 26) { advX = sx * 0.9; advZ = cz * 0.9; s.advancing = true; }
       else if (dist < 11) { advX = -sx * 0.6; advZ = -cz * 0.6; s.advancing = true; }
-      const strfX = cz * this.strafeDir * 0.65;
-      const strfZ = -sx * this.strafeDir * 0.65;
-      this.pos.x += (advX + strfX) * b.speedStrafe * dt;
-      this.pos.z += (advZ + strfZ) * b.speedStrafe * dt;
-      moveSpeed = b.speedStrafe;
 
-      if (Math.abs(dyaw) < b.aimSettleRad && this.curTarget) {
+      this.strafeT -= dt;
+      if (this.strafeT <= 0) {
+        this.strafeT = rand(2.2, 4.2);
+        this.strafeDir *= -1;
+      }
+      let tvx = advX + cz * this.strafeDir * 0.62;
+      let tvz = advZ + (-sx) * this.strafeDir * 0.62;
+      const tl = Math.hypot(tvx, tvz) || 1;
+      tvx /= tl; tvz /= tl;
+
+      this.strafeVX += (tvx - this.strafeVX) * Math.min(1, dt * 2.5);
+      this.strafeVZ += (tvz - this.strafeVZ) * Math.min(1, dt * 2.5);
+
+      const bursting = this.burstLeft > 0 && this.burstPause <= 0;
+      s.planted = bursting && dist < 30;
+      const moveScale = s.planted ? 0.12 : 1;
+      moveSpeed = b.speedStrafe * moveScale;
+
+      this.pos.x += this.strafeVX * b.speedStrafe * moveScale * dt;
+      this.pos.z += this.strafeVZ * b.speedStrafe * moveScale * dt;
+
+      this.reactionT -= dt;
+      if (this.reactionT <= 0 && Math.abs(dyaw) < b.aimSettleRad && this.curTarget) {
         if (this.burstLeft > 0 && this.fireCool <= 0) {
           this.burstLeft--;
           this.fireCool = b.burstInterval + Math.random() * 0.04;
@@ -553,7 +576,7 @@ class AIController {
     } else {
       this.state = STATE.PATROL;
       if (!this.wander || Math.hypot(this.wander.x - this.pos.x, this.wander.z - this.pos.z) < 2.5) {
-        if (s.team === 'rangers' && game.difficulty.assistPlayer && Math.random() < 0.45 && game.state === 'playing') {
+        if (s.team === 'rangers' && game.difficulty.assistPlayer && Math.random() < 0.25 && game.state === 'playing') {
           const px = game.player.position.x, pz = game.player.position.z;
           this.wander = new THREE.Vector3(
             clamp(px + rand(-18, 18), -47, 47), 0,
@@ -574,5 +597,6 @@ class AIController {
     this.world.collide(this.pos, 0.5);
     this._stuckCheck(dt);
     s.moving = moveSpeed;
+    this.prevVisible = this.visibleTarget;
   }
 }

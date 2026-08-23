@@ -7,3 +7,7 @@ PORT 3000 busy — retrying every 5s
 DESERT STRIKE listening on http://localhost:8099
 2026-08-23T04:21:03.263Z GET /
 2026-08-23T04:21:03.392Z GET /
+PORT 3000 busy — retrying every 5s
+DESERT STRIKE listening on http://localhost:8099
+2026-08-23T05:06:31.679Z GET /static/js/soldier.js
+2026-08-23T05:06:31.805Z GET /
