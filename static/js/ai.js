@@ -25,6 +25,7 @@ export class Soldier {
     const p = buildSoldierV2(team, name, game.scene);
     this.root = p.root;
     this.body = p.body;
+    this.head = p.head;
     this.armL = p.armL;
     this.armR = p.armR;
     this.legL = p.legL;
@@ -46,6 +47,14 @@ export class Soldier {
     this.recoilT = 0;
     this.fallDir = 1;
     this.lastShotTime = -99;
+    this.planarSpeed = 0;
+    this.velX = 0;
+    this.velZ = 0;
+    this.combat = false;
+    this.advancing = false;
+    this.planted = false;
+    this.aimPitch = 0;
+    this.scanSeed = rand(0, 10);
     this._prev = new THREE.Vector3();
     this._v = new THREE.Vector3();
   }
@@ -203,25 +212,50 @@ export class Soldier {
   }
 
   _animate(dt, game) {
-    const k = clamp(this.planarSpeed / CFG.bot.speedPatrol, 0, 1.7);
-    if (k > 0.06) {
-      this.phase += dt * (5.2 + k * 3.4);
-    }
-    const swing = Math.sin(this.phase) * 0.58 * Math.min(1, k);
-    const shuffle = this.combat && !this.advancing ? 0.4 : 1;
+    const sp = this.planarSpeed;
+    const planted = this.planted && this.combat;
+    const effSp = planted ? sp * 0.15 : sp;
 
-    this.legL.rotation.x = swing * shuffle;
-    this.legR.rotation.x = -swing * shuffle;
-    this.body.position.y = Math.abs(Math.cos(this.phase)) * 0.05 * Math.min(1, k);
-    this.body.rotation.z = Math.sin(this.phase) * 0.035 * Math.min(1, k) * shuffle;
+    if (effSp > 0.15) this.phase += dt * effSp * 2.45;
+    const strideAmp = Math.min(0.6, sp * 0.17) * (planted ? 0.12 : 1);
+    const swing = Math.sin(this.phase) * strideAmp;
+    const lift = Math.abs(Math.cos(this.phase)) * Math.min(0.07, sp * 0.02);
+
+    this.legL.rotation.x += (swing - this.legL.rotation.x) * Math.min(1, dt * 16);
+    this.legR.rotation.x += (-swing - this.legR.rotation.x) * Math.min(1, dt * 16);
+    this.body.position.y += (lift - this.body.position.y) * Math.min(1, dt * 12);
+
+    const sy = Math.sin(this.yaw), cy = Math.cos(this.yaw);
+    const lx = cy * this.velX - sy * this.velZ;
+    const lz = sy * this.velX + cy * this.velZ;
+    const lspd = Math.hypot(lx, lz);
+    const leanZ = clamp(lx * 0.028, -0.08, 0.08);
+    const leanX = clamp(lz * 0.024, -0.02, 0.11);
+    const swayZ = Math.sin(this.phase) * 0.032 * Math.min(1, lspd / 3);
+
+    this.body.rotation.z += ((planted ? 0 : swayZ) + leanZ - this.body.rotation.z) * Math.min(1, dt * 8);
+    this.body.rotation.x += (leanX - this.body.rotation.x) * Math.min(1, dt * 8);
 
     const aimK = this.combat ? 1 : 0;
     const recoil = Math.max(0, this.recoilT) / 0.09;
     this.recoilT = Math.max(0, this.recoilT - dt);
-    const targetArmR = 0.55 + 0.5 * aimK - this.aimPitch * aimK * 0.9 - recoil * 0.25;
-    const targetArmL = 0.85 + 0.35 * aimK - this.aimPitch * aimK * 0.85 + swing * 0.12 * (1 - aimK);
+    const targetArmR = 0.55 + 0.42 * aimK - this.aimPitch * aimK * 0.9 - recoil * 0.25;
+    const targetArmL = 0.85 + 0.3 * aimK - this.aimPitch * aimK * 0.85 + (planted ? 0 : -swing * 0.14 * (1 - aimK));
     this.armR.rotation.x += (targetArmR - this.armR.rotation.x) * Math.min(1, dt * 10);
     this.armL.rotation.x += (targetArmL - this.armL.rotation.x) * Math.min(1, dt * 10);
+
+    let headYawT = 0, headPitchT = 0;
+    if (this.combat && this.ai.hasTarget) {
+      const dx = this.ai.targetPos.x - this.position.x;
+      const dz = this.ai.targetPos.z - this.position.z;
+      headYawT = clamp(wrapAngle(Math.atan2(dx, dz) - this.yaw) * 0.55, -0.65, 0.65);
+      headPitchT = clamp(-this.aimPitch * 0.5, -0.3, 0.3);
+    } else if (sp < 0.6) {
+      headYawT = Math.sin(game.time * 0.45 + this.scanSeed) * 0.55;
+      headPitchT = Math.sin(game.time * 0.3 + this.scanSeed * 2) * 0.06;
+    }
+    this.head.rotation.y += (headYawT - this.head.rotation.y) * Math.min(1, dt * 5);
+    this.head.rotation.x += (headPitchT - this.head.rotation.x) * Math.min(1, dt * 5);
 
     const d = this.position.distanceTo(game.player.position);
     if (this.team === 'rangers') {
