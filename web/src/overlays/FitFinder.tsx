@@ -55,7 +55,7 @@ export default function FitFinder() {
             {res.alternatives?.length > 0 && <p className="dim">Between sizes? {res.alternatives.join(' or ')} also works. Exchanges are free for 7 days.</p>}
             <div className="row-gap">
               {overlayData?.onPick && <button className="btn btn--primary" onClick={() => { overlayData.onPick(res.size); close() }}>Select {res.size}</button>}
-              {product && <button className="btn btn--ghost" onClick={() => open('tryon', { productId: product.id })}>Check it on camera</button>}
+              {product && <a className="btn btn--ghost" href="#lab" onClick={close}>Inspect it in 3D</a>}
             </div>
           </div>
         </div>

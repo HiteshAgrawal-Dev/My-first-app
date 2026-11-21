@@ -1,31 +1,30 @@
-/* VÉLOURA — "velvet night atelier": a dark, deliberately single-theme world.
+/* VÉLOURA — "gallery atelier": pale plaster walls, ink type, oxblood used like a wax seal.
+   Dark velvet survives only inside .band-dark sections (film, scroll sequence, departments, footer).
    Layout concept: editorial couture spreads (Paris) set on a precise technical grid (Tokyo). */
 :root {
-  color-scheme: dark;
-  --ink: #0e0a0e;          /* page ground: aubergine-black, never pure black */
-  --velvet: #1a1119;       /* raised surfaces */
-  --velvet-2: #241823;
-  --plum: #3a1f3d;
-  --oxblood: #5c1428;
-  --bone: #e6dccb;         /* primary text */
-  --bone-dim: #b3a898;     /* secondary text (AA on ink) */
-  --bone-faint: #7d7368;
-  --champagne: #d9b98c;    /* the single accent */
-  --champagne-hi: #f0d7ad;
-  --steel: #8e97a6;
-  --ok: #8fbf9a;
-  --warn: #e0a15c;
-  --line: rgba(230, 220, 203, 0.13);
-  --line-strong: rgba(230, 220, 203, 0.28);
-  --glass: rgba(20, 13, 19, 0.62);
+  color-scheme: light;
+  --bg: #e7e4de;  --bg-rgb: 231, 228, 222;     /* cool plaster */
+  --bg-2: #dedad3;
+  --surface: #f1efeb; --surface-rgb: 241, 239, 235;
+  --fg: #141213;  --fg-rgb: 20, 18, 19;        /* ink */
+  --fg-2: #4d4845;                              /* secondary text, 7:1 on bg */
+  --fg-3: #7a736d;                              /* tertiary, 4.1:1 */
+  --accent: #6e1c2c; --accent-rgb: 110, 28, 44; /* oxblood seal */
+  --accent-hi: #8a2638;
+  --plum: #3a1f3d; --oxblood: #5c1428; --velvet: #1a1119;
+  --ok: #2f6b44; --warn: #a2501c;
+  --line: rgba(20, 18, 19, 0.12);
+  --line-strong: rgba(20, 18, 19, 0.26);
+  --glass: rgba(241, 239, 235, 0.72);
+  --scrim: rgba(28, 24, 24, 0.34);
+  --shadow: 0 30px 80px rgba(40, 30, 28, 0.18);
 
   --f-display: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
   --f-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --f-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
 
-  /* type scale (1.25 minor third, fluid at the top) */
   --t-xs: 0.72rem; --t-sm: 0.84rem; --t-md: 1rem; --t-lg: 1.25rem; --t-xl: 1.6rem;
-  --t-2xl: clamp(2rem, 4vw, 3rem); --t-3xl: clamp(2.6rem, 6.5vw, 5.4rem); --t-hero: clamp(3.6rem, 15vw, 15rem);
+  --t-2xl: clamp(2rem, 4vw, 3rem); --t-3xl: clamp(2.6rem, 6.5vw, 5.4rem); --t-hero: clamp(4.2rem, 19vw, 19rem);
 
   --gutter: max(16px, env(safe-area-inset-left, 0px));
   --gutter-r: max(16px, env(safe-area-inset-right, 0px));
@@ -33,5 +32,18 @@
   --radius: 2px;
   --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
   --header-h: 64px;
+}
+/* Same token names, night values: anything inside inherits the velvet look automatically. */
+.band-dark {
+  color-scheme: dark;
+  --bg: #0e0a0e; --bg-rgb: 14, 10, 14; --bg-2: #090609;
+  --surface: #1a1119; --surface-rgb: 26, 17, 25;
+  --fg: #e6dccb; --fg-rgb: 230, 220, 203;
+  --fg-2: #b3a898; --fg-3: #8a8075;
+  --accent: #d9b98c; --accent-rgb: 217, 185, 140; --accent-hi: #f0d7ad;
+  --line: rgba(230, 220, 203, 0.13); --line-strong: rgba(230, 220, 203, 0.28);
+  --glass: rgba(20, 13, 19, 0.62);
+  --ok: #8fbf9a; --warn: #e0a15c;
+  background: var(--bg); color: var(--fg);
 }
 @media (min-width: 900px) { :root { --gutter: max(40px, env(safe-area-inset-left, 0px)); --gutter-r: max(40px, env(safe-area-inset-right, 0px)); --header-h: 76px; } }

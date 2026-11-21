@@ -35,26 +35,36 @@ if (!args['skip-cats'] && !args.only) {
   }
 }
 
+// --fresh-since=<epoch ms>: skip jobs whose outputs were all written after that time (resume a run)
+if (args['fresh-since']) {
+  const since = Number(args['fresh-since'])
+  const keep = jobs.filter((j) => !j.outs.every((o) => { try { return fs.statSync(path.join(OUT, o)).mtimeMs > since } catch { return false } }))
+  jobs.length = 0
+  jobs.push(...keep)
+}
 await ensureServer()
 const nJobs = Number(args.jobs ?? 2)
 console.log(`${jobs.length} renders, ${nJobs} parallel`)
 const t0 = Date.now()
 let done = 0
 async function worker() {
-  const browser = await launch()
+  let browser = await launch()
   while (jobs.length) {
     const j = jobs.shift()
     const raw = path.join(TMP, `${Math.random().toString(36).slice(2)}.png`)
-    for (let attempt = 0; attempt < 2; attempt++) {
+    for (let attempt = 0; attempt < 4; attempt++) {
       try {
-        const page = await openPage(browser, `${BASE}/render.html?${j.q}`, { width: j.w, height: j.h, scale: SS })
-        await page.screenshot({ path: raw, omitBackground: !j.opaque })
+        const page = await openPage(browser, `${BASE}/render.html?${j.q}`, { width: j.w, height: j.h, scale: SS, timeout: 240000 })
+        await page.screenshot({ path: raw, omitBackground: !j.opaque, timeout: 120000 })
         await page.close()
         break
       } catch (e) {
-        console.error('retry', j.q, e.message)
+        console.error('retry', j.q, String(e.message).split('\n')[0])
+        try { await browser.close() } catch {}
+        browser = await launch()
       }
     }
+    if (!fs.existsSync(raw)) { console.error('FAILED', j.q); continue }
     for (const o of j.outs) {
       const dst = path.join(OUT, o)
       if (o.endsWith('.png')) ffmpegConvert(raw, dst, { w: j.w, h: j.h })

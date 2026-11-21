@@ -93,7 +93,7 @@ export default function Product({ id }: { id: string }) {
               </button>
             ))}
             <button role="tab" aria-selected={view === '3d'} className={`pdp__3d ${view === '3d' ? 'is-on' : ''}`} onClick={() => setView('3d')}><Icon name="cube" /><span className="mono">3D</span></button>
-            <button className="pdp__3d" onClick={() => open('tryon', { productId: p.id, colorIndex: ci })}><Icon name="camera" /><span className="mono">Try on</span></button>
+            <button className="pdp__3d" onClick={() => open('fit', { productId: p.id, onPick: (s: string) => { setSize(s); setSizeErr(false) } })}><Icon name="ruler" /><span className="mono">My size</span></button>
           </div>
         </div>
 

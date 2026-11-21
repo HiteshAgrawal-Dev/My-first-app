@@ -7,7 +7,7 @@ const NAV: { hash: string; label: string; idx: string; route: Route['name'] }[] 
   { hash: 'men', label: 'Men', idx: '01', route: 'men' },
   { hash: 'women', label: 'Women', idx: '02', route: 'women' },
   { hash: 'drops', label: 'Drops', idx: '03', route: 'drops' },
-  { hash: 'lab', label: '3D Try-On Lab', idx: '04', route: 'lab' },
+  { hash: 'lab', label: '3D Studio', idx: '04', route: 'lab' },
 ]
 
 export default function Header({ route }: { route: Route }) {

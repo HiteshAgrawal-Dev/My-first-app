@@ -17,7 +17,7 @@ export default function FilmSection() {
   }, [portrait])
   const toggle = () => { const el = v.current!; if (el.paused) { el.play(); setPlaying(true) } else { el.pause(); setPlaying(false) } }
   return (
-    <section className="film" aria-label="Nocturne 001 campaign film">
+    <section className="film band-dark" aria-label="Nocturne 001 campaign film">
       <div className="film__frame" data-reveal>
         {!failed ? (
           <video key={portrait ? 'v' : 'h'} ref={v} className="film__video" muted loop playsInline preload="metadata" poster={asset('/film/campaign-poster.webp')} onError={() => setFailed(true)}>

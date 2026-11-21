@@ -26,7 +26,7 @@ const PAGES: Record<string, { eyebrow: string; title: string; body: JSX.Element 
   privacy: {
     eyebrow: 'Client concierge', title: 'Privacy & biometric data',
     body: (<>
-      <p>The camera try-on runs entirely in your browser. Video frames are processed on your device by an on-device pose model and are never uploaded, recorded or stored by us.</p>
+      <p>Camera try-on is coming soon. When it launches it will run entirely in your browser: video frames will be processed on your device and never uploaded, recorded or stored by us.</p>
       <p>If you save a fit profile, we store only your height, optional weight and chest measurement and your drape preference, to recommend sizes. You can delete it anytime from your profile.</p>
       <p>We never sell personal data. Payment details are handled by our PCI-DSS certified payment partner and never touch our servers.</p>
     </>),

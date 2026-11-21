@@ -3,7 +3,6 @@ import { Canvas, useFrame } from '@react-three/fiber'
 import { Environment, Lightformer, Float } from '@react-three/drei'
 import * as THREE from 'three'
 import { GarmentModel } from '../garments'
-import Dust from './Dust'
 
 /** Hero: the flagship hoodie floats in a champagne spotlight, tilts toward the cursor and turns as you scroll. */
 function Rig({ type, color, progress }: { type: string; color: string; progress: React.MutableRefObject<number> }) {
@@ -50,7 +49,6 @@ export default function HeroStage({ type = 'hoodie', color = '#15121a', progress
         </Environment>
         <Rig type={type} color={color} progress={progress} />
       </Suspense>
-      <Dust count={420} spread={[6, 4, 3]} />
     </Canvas>
   )
 }

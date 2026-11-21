@@ -24,9 +24,9 @@ export default function Lab() {
     <div ref={ref} className="page page--lab">
       <section className="lab wrap">
         <div className="lab__copy">
-          <p className="eyebrow">Interactive 3D try-on studio</p>
-          <h1 className="display display--xl">The <em>fitting room</em><br />is your camera.</h1>
-          <p className="lead">Spin any piece in 3D, change its colourway, then step in front of your camera and see it move with you. The pose model runs on your device. No video is uploaded or stored.</p>
+          <p className="eyebrow">Interactive 3D studio</p>
+          <h1 className="display display--xl">Every seam,<br /><em>in your hands.</em></h1>
+          <p className="lead">Turn any piece through 360°, zoom into the stitching and change its colourway before you buy. Then let the fit engine pick your size.</p>
           <div className="lab__picker">
             <p className="mono">01 · Silhouette</p>
             <div className="chips">{garments.map((x) => <button key={x} className={`chip ${g === x ? 'is-on' : ''}`} aria-pressed={g === x} onClick={() => { setG(x); setPid(products.find((y) => y.garment === x)!.id); setCi(0) }}>{GARMENT_LABEL[x]}</button>)}</div>
@@ -38,10 +38,11 @@ export default function Lab() {
             </div>
           </div>
           <div className="row-gap">
-            <button className="btn btn--primary" onClick={() => open('tryon', { productId: p.id, colorIndex: ci })}><Icon name="camera" size={16} /> Try it on with my camera</button>
+            <button className="btn btn--primary" onClick={() => open('fit', { productId: p.id })}><Icon name="ruler" size={16} /> Find my size</button>
+            <button className="btn btn--ghost" onClick={() => open('tryon', { productId: p.id, colorIndex: ci })}><Icon name="camera" size={16} /> Camera try-on <span className="coming">Soon</span></button>
             <a className="btn btn--ghost" href={`#p-${p.id}`}>View piece · {money(p.price)}</a>
           </div>
-          <p className="fineprint">Works best in good light with your shoulders and hips in frame. No camera? Upload a photo or use the mannequin.</p>
+          <p className="fineprint">Drag to rotate, scroll or pinch to zoom.</p>
         </div>
         <div className="lab__viewer">
           <div className="lab__ring" aria-hidden />
@@ -52,7 +53,7 @@ export default function Lab() {
         </div>
       </section>
       <section className="wrap section steps" aria-label="How it works">
-        {[['Choose', 'Pick a silhouette and colourway and inspect every seam in 3D.'], ['Step in', 'Allow your camera. The garment locks to 33 body landmarks and follows your movement.'], ['Get your size', 'We estimate your shoulder width and recommend a size with a confidence score.']].map(([t, d], i) => (
+        {[['Inspect', 'Pick a silhouette and colourway and turn it through 360°.'], ['Size', 'Give us your height and one optional measurement. The fit engine does the rest.'], ['Exchange free', 'Still not right? Swap sizes free within 7 days. We collect from your door.']].map(([t, d], i) => (
           <div key={t} className="step" data-reveal><span className="mono">0{i + 1}</span><h3>{t}</h3><p>{d}</p></div>
         ))}
       </section>

@@ -21,16 +21,17 @@ void main(){
   // Velvet: piles catch light at grazing angles (inverted falloff) — the signature rim glow.
   float rim = pow(1.0 - ndv, 2.6);
   vec3 col = mix(uDeep, uBase, smoothstep(-0.9, 0.6, vFold));
-  col *= 0.35 + 0.75 * ndl;
-  col += uSheen * rim * (0.32 + 0.42 * ndl);
+  col *= 0.78 + 0.26 * ndl;
+  col = mix(col, uSheen, rim * (0.35 + 0.3 * ndl));
   // Champagne specular glint, very soft.
   vec3 H = normalize(L + V);
-  col += uSheen * pow(max(dot(N, H), 0.0), 38.0) * 0.18;
+  col += uSheen * pow(max(dot(N, H), 0.0), 60.0) * 0.06;
   // Vignette + film grain for a cinematic finish.
   vec2 q = vUv - 0.5;
-  col *= smoothstep(0.95, 0.15, length(q * vec2(1.0, 1.3)));
+  col = mix(uDeep, col, smoothstep(1.1, 0.25, length(q * vec2(1.0, 1.3))));
   // Quieter on the left third where headline copy sits.
-  col *= mix(0.62, 1.0, smoothstep(0.05, 0.55, vUv.x));
-  col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * 0.025;
+  col = mix(mix(col, uBase, 0.55), col, smoothstep(0.05, 0.55, vUv.x));
+  col += (hash(gl_FragCoord.xy + fract(uTime)) - 0.5) * 0.018;
   gl_FragColor = vec4(col, 1.0);
+  #include <colorspace_fragment>
 }

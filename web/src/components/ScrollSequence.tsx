@@ -57,7 +57,7 @@ export default function ScrollSequence() {
   }, [])
 
   return (
-    <section ref={root} className="seq" aria-label="How the Monolith 500 hoodie is engineered">
+    <section ref={root} className="seq band-dark" aria-label="How the Monolith 500 hoodie is engineered">
       <div className="seq__stage">
         <div className="seq__head wrap">
           <p className="eyebrow">Engineered in panels</p>

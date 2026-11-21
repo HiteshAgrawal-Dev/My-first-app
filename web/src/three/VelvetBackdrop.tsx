@@ -6,10 +6,10 @@ import frag from './shaders/velvet.frag'
 
 /** Palette per page section — the cloth slowly re-dyes itself as you scroll. */
 const PALETTES = [
-  { base: '#3a1f3d', deep: '#0b070b', sheen: '#d9b98c' }, // nocturne plum
-  { base: '#5c1428', deep: '#0c0608', sheen: '#e8c49a' }, // oxblood
-  { base: '#1d2233', deep: '#06070b', sheen: '#aeb9cc' }, // tokyo steel night
-  { base: '#2b1a12', deep: '#080504', sheen: '#e2a868' }, // saffron dusk
+  { base: '#e9e6e0', deep: '#c9c3ba', sheen: '#ffffff' }, // plaster silk
+  { base: '#e8e1df', deep: '#c8b9b8', sheen: '#fff8f6' }, // blush plaster (women)
+  { base: '#e2e4e6', deep: '#bfc3c8', sheen: '#ffffff' }, // tokyo concrete (lab)
+  { base: '#e8e3da', deep: '#c6bba9', sheen: '#fffaf0' }, // sandstone (drops)
 ]
 
 function Cloth({ tone }: { tone: number }) {
@@ -43,7 +43,7 @@ function Cloth({ tone }: { tone: number }) {
   return (
     <mesh rotation={[-0.18, 0, 0]} position={[0, 0, -1.2]}>
       <planeGeometry args={[w, h, 220, 140]} />
-      <shaderMaterial ref={mat} vertexShader={vert} fragmentShader={frag} uniforms={uniforms} />
+      <shaderMaterial toneMapped={false} ref={mat} vertexShader={vert} fragmentShader={frag} uniforms={uniforms} />
     </mesh>
   )
 }

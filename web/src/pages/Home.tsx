@@ -13,7 +13,7 @@ import SafeBoundary from '../components/SafeBoundary'
 const HeroStage = lazy(() => import('../three/HeroStage'))
 
 const WORRIES = [
-  { icon: 'ruler', q: '"Will it fit me?"', a: 'Get a size from your height in 20 seconds, or see it on yourself with the camera. 94% of clients keep their first size.', cta: ['Find my size', 'fit'] },
+  { icon: 'ruler', q: '"Will it fit me?"', a: 'Get a size from your height in 20 seconds and inspect every seam in 3D. 94% of clients keep their first size.', cta: ['Find my size', 'fit'] },
   { icon: 'swap', q: '"What if it doesn’t?"', a: 'Exchange any size free within 7 days. We collect from your door and send the new size the same day.', cta: ['Exchange policy', 'shipping'] },
   { icon: 'truck', q: '"I need it by Friday."', a: 'Dispatched in 48 hours. Express reaches Mumbai, Delhi and Bengaluru in 1–2 days. Check your pincode on any product.', cta: null },
   { icon: 'lock', q: '"Is paying safe?"', a: 'UPI, cards, net banking or cash on delivery. Split orders over ₹3,000 into 3 interest-free EMIs.', cta: null },
@@ -23,7 +23,7 @@ const WORRIES = [
 
 const REVIEWS = [
   { name: 'Ishaan R.', city: 'Bengaluru', meta: '182 cm · 78 kg · bought L', product: 'Monolith 500 Hoodie', fit: 'True to size', text: 'The weight is unreal. It hangs like a coat and still looks sharp after a dozen washes. The fit engine said L and it was spot on.' },
-  { name: 'Mei T.', city: 'Tokyo', meta: '160 cm · bought S', product: 'Sculpted Corset Blazer', fit: 'True to size', text: 'The boning shapes the waist without digging in. I tried it on with the camera first, which is why I ordered the S instead of my usual M.' },
+  { name: 'Mei T.', city: 'Tokyo', meta: '160 cm · bought S', product: 'Sculpted Corset Blazer', fit: 'True to size', text: 'The boning shapes the waist without digging in. The fit finder told me to take the S instead of my usual M, and it was right.' },
   { name: 'Aanya K.', city: 'Mumbai', meta: '168 cm · bought M', product: 'Parachute Cargo W', fit: 'Slightly long', text: 'Arrived the next morning. The bungee hems fix the length, and the ripstop handles monsoon days.' },
   { name: 'Louis D.', city: 'Paris', meta: '176 cm · bought M', product: 'Strata Puffer', fit: 'Roomy', text: 'Warm enough for January in Paris without looking like a sleeping bag. The funnel collar is perfect.' },
 ]
@@ -34,7 +34,7 @@ function Hero() {
   const money = useMoney()
   const open = useStore((s) => s.open)
   const hoodie = byId('vl-m-hoodie-01')!
-  const [ci, setCi] = useState(0)
+  const [ci, setCi] = useState(1)
   useLayoutEffect(() => {
     if (!root.current || reducedMotion()) return
     const ctx = gsap.context(() => {
@@ -59,10 +59,10 @@ function Hero() {
         <div className="hero__left">
           <p className="eyebrow hero__fade">Atelier № 01 · Monolith 500 Hoodie</p>
           <p className="hero__lede hero__fade">Architecture<br /><em>you can wear.</em></p>
-          <p className="hero__sub hero__fade">Heavyweight streetwear cut like tailoring in Paris, engineered in Tokyo and finished in Mumbai. Try any piece on with your camera before you buy.</p>
+          <p className="hero__sub hero__fade">Heavyweight streetwear cut like tailoring in Paris, engineered in Tokyo and finished in Mumbai. Turn any piece in 3D and get your size before you buy.</p>
           <div className="row-gap hero__fade">
             <a className="btn btn--primary" href={`#p-${hoodie.id}`}>Shop the hoodie · {money(hoodie.price)}</a>
-            <button className="btn btn--ghost" onClick={() => open('tryon', { productId: hoodie.id, colorIndex: ci })}><Icon name="camera" size={16} /> Try it on live</button>
+            <button className="btn btn--ghost" onClick={() => open('fit', { productId: hoodie.id })}><Icon name="ruler" size={16} /> Find my size in 20s</button>
           </div>
         </div>
         <div className="hero__right hero__fade">
@@ -86,7 +86,7 @@ function Hero() {
 }
 
 function Marquee() {
-  const items = ['3D fit check before you buy', '500GSM organic cotton', 'Camera try-on, processed on your device', '48h express dispatch', '7-day free size exchange', 'Cash on delivery across India']
+  const items = ['3D fit check before you buy', '500GSM organic cotton', 'Every piece in 3D', '48h express dispatch', '7-day free size exchange', 'Cash on delivery across India']
   return (
     <div className="marquee" aria-label="Why Véloura">
       <div className="marquee__track">{[...items, ...items].map((t, i) => <span key={i} aria-hidden={i >= items.length}><i>◈</i>{t}</span>)}</div>
@@ -120,7 +120,7 @@ function Departments() {
     { href: '#drops', label: 'Drops', sub: 'Numbered capsules', img: asset('/renders/cat-puffer.webp'), n: products.filter((p) => p.dept === 'drops').length },
   ]
   return (
-    <section className="depts wrap" aria-label="Departments">
+    <section className="depts band-dark" aria-label="Departments">
       {tiles.map((t, i) => (
         <a key={t.href} href={t.href} className="dept" data-reveal style={{ ['--d' as any]: i }}>
           <span className="dept__img" data-parallax="8"><Img src={t.img} alt="" /></span>
@@ -166,15 +166,15 @@ function FitBlock() {
       <div className="fitblock__copy" data-reveal>
         <p className="eyebrow">The biometric fit engine</p>
         <h2 className="display">Your size, <em>before</em> it ships.</h2>
-        <p className="lead">Sizing is the number one reason streetwear comes back. Ours doesn't, because you see the fit first: point your camera, and the garment tracks your shoulders and hips live. Your video never leaves your device.</p>
+        <p className="lead">Sizing is the number one reason streetwear comes back. Ours rarely does: tell us your height, add one measurement if you have it, and the fit engine returns a size with a confidence score, adjusted for how each piece is cut.</p>
         <ul className="ticks">
-          <li><Icon name="check" size={16} /> Live overlay on 33 body landmarks</li>
-          <li><Icon name="check" size={16} /> Shoulder width estimated in centimetres</li>
-          <li><Icon name="check" size={16} /> Size recommendation with a confidence score</li>
+          <li><Icon name="check" size={16} /> Calibrated against our own pattern blocks</li>
+          <li><Icon name="check" size={16} /> Knows boxy from fitted, piece by piece</li>
+          <li><Icon name="check" size={16} /> Free exchange if it's still not right</li>
         </ul>
         <div className="row-gap">
-          <button className="btn btn--primary" onClick={() => open('tryon', { productId: 'vl-w-corset-01' })}><Icon name="camera" size={16} /> Open camera try-on</button>
-          <button className="btn btn--ghost" onClick={() => open('fit')}><Icon name="ruler" size={16} /> No camera? Use my height</button>
+          <button className="btn btn--primary" onClick={() => open('fit')}><Icon name="ruler" size={16} /> Find my size</button>
+          <button className="btn btn--ghost" onClick={() => open('tryon', { productId: 'vl-w-corset-01' })}><Icon name="camera" size={16} /> Camera try-on <span className="coming">Soon</span></button>
         </div>
       </div>
       <div className="fitblock__viz" data-reveal aria-hidden>
@@ -183,7 +183,7 @@ function FitBlock() {
           <span className="scanner__line" />
           <span className="scanner__pt" style={{ left: '30%', top: '24%' }} /><span className="scanner__pt" style={{ left: '70%', top: '24%' }} />
           <span className="scanner__pt" style={{ left: '35%', top: '62%' }} /><span className="scanner__pt" style={{ left: '65%', top: '62%' }} />
-          <span className="scanner__read mono">SHOULDER 43.8cm · TORSO 58cm · MATCH S 91%</span>
+          <span className="scanner__read mono">FIT ENGINE · 160 CM · RECOMMENDED S · 91% MATCH</span>
         </div>
       </div>
     </section>

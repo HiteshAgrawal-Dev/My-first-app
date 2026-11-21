@@ -29,11 +29,11 @@ export default function Footer() {
   ]
 
   return (
-    <footer className="footer">
+    <footer className="footer band-dark">
       <div className="footer__top wrap">
         <div className="footer__brand">
           <p className="footer__word">VÉLOURA</p>
-          <p className="dim">Architectural luxury streetwear engineered for kinetic silhouettes, with live 3D and camera fitting.</p>
+          <p className="dim">Architectural luxury streetwear engineered for kinetic silhouettes, with live 3D and a fit engine that knows how each piece is cut.</p>
           <form className="inline-form" onSubmit={join}>
             <label htmlFor="vip-email" className="sr-only">Email for the VIP list</label>
             <input id="vip-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email for early drop access" autoComplete="email" />

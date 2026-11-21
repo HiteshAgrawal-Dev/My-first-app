@@ -9,7 +9,7 @@ export default function BottomBar({ route }: { route: Route }) {
   const items = [
     { k: 'home', label: 'Home', icon: 'home', href: '#home', active: route.name === 'home' },
     { k: 'shop', label: 'Shop', icon: 'grid', href: '#men', active: ['men', 'women', 'drops', 'product'].includes(route.name) },
-    { k: 'lab', label: 'Try-On', icon: 'camera', href: '#lab', active: route.name === 'lab' },
+    { k: 'lab', label: '3D', icon: 'cube', href: '#lab', active: route.name === 'lab' },
     { k: 'wish', label: 'Wishlist', icon: 'heart', href: '#wishlist', active: route.name === 'wishlist', n: wish },
   ]
   return (

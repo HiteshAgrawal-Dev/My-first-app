@@ -30,7 +30,7 @@ export default function Collection({ dept }: { dept: Dept }) {
 
   return (
     <div ref={ref} className="page page--collection">
-      <header className="colhero">
+      <header className="colhero band-dark">
         <div className="colhero__img" data-parallax="10"><Img src={asset(m.hero)} alt="" tint={m.tone} priority /></div>
         <div className="colhero__copy wrap">
           <p className="eyebrow">{base.length} pieces · Free 7-day exchange</p>
