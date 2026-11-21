@@ -1120,9 +1120,18 @@
     right: 24px;
   }
   .vt-mq-controls {
-    left: 12px;
-    bottom: 12px;
-    padding: 14px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+    width: auto;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px 16px;
+    padding: 10px 14px 8px;
+  }
+  .vt-mq-controls .vt-eyebrow,
+  .vt-mq-controls .vt-micro,
+  .vt-mq-controls .vt-range-ticks {
+    display: none;
   }
 }
 @media (max-width: 520px) {

@@ -48,8 +48,15 @@ function prepare(key: string, garment: string, source: CanvasImageSource & { wid
   canvas.height = h
   const ctx = canvas.getContext('2d', { willReadFrequently: true })!
   ctx.drawImage(source, 0, 0, w, h)
-  const data = ctx.getImageData(0, 0, w, h)
-  const meta = analyzeGarmentAlpha(data.data, w, h, garmentKind(garment), isSleeved(garment))
+  let data = ctx.getImageData(0, 0, w, h)
+  // Geometry uses a high alpha threshold so soft studio drop-shadows don't count as fabric.
+  const meta = analyzeGarmentAlpha(data.data, w, h, garmentKind(garment), isSleeved(garment), 110)
+  // Remove anything below the hem (contact / drop shadow baked into the render).
+  const cut = Math.min(h, meta.hemY + 3)
+  if (cut < h) {
+    ctx.clearRect(0, cut, w, h - cut)
+    data = ctx.getImageData(0, 0, w, h)
+  }
   return { key, garment, canvas, data, meta, source: kind }
 }
 

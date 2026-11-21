@@ -107,14 +107,14 @@ function Body({ bx }: { bx: number }) {
     },
     [geo, mat],
   )
-  const sx = 0.19 * bx
+  const sx = 0.182 * bx
   return (
     <group>
       <mesh geometry={geo.torso} material={mat} scale={[1.16 * bx, 1, 0.66 * (0.94 + 0.06 * bx)]} castShadow />
       {/* shoulder caps */}
       {[-1, 1].map((s) => (
         <mesh key={`sh${s}`} position={[s * sx, 1.375, 0]} scale={[1, 0.9, 0.95]} material={mat} castShadow>
-          <sphereGeometry args={[0.062, 32, 24]} />
+          <sphereGeometry args={[0.058, 32, 24]} />
         </mesh>
       ))}
       {/* neck + head */}
@@ -204,6 +204,30 @@ function GarmentShell({ g, bx }: { g: MannequinGarment; bx: number }) {
   )
 }
 
+/**
+ * Placement for the sibling GarmentModel (ghost-mannequin meshes normalised to a bounding
+ * height of 0.9 units for tops / 1.7 for trousers, centred at the origin, facing +Z).
+ * Values are world metres on the 175 cm figure: [target height, top edge y].
+ */
+const EXTERNAL_FIT: Record<string, { norm: number; h: number; top: number }> = {
+  hoodie: { norm: 0.9, h: 0.98, top: 1.78 },
+  tee: { norm: 0.9, h: 0.7, top: 1.5 },
+  puffer: { norm: 0.9, h: 0.76, top: 1.58 },
+  blazer: { norm: 0.9, h: 0.86, top: 1.53 },
+  corset: { norm: 0.9, h: 0.56, top: 1.43 },
+  cargo: { norm: 1.7, h: 0.99, top: 1.0 },
+}
+
+function ExternalGarment({ C, type, color, bx }: { C: NonNullable<MannequinProps['GarmentModel']>; type: string; color: string; bx: number }) {
+  const f = EXTERNAL_FIT[type] ?? EXTERNAL_FIT.hoodie
+  const k = f.h / f.norm
+  return (
+    <group position={[0, f.top - f.h / 2, 0.005]} scale={[k * bx, k, k * (0.96 + 0.04 * bx)]}>
+      <C type={type} color={color} />
+    </group>
+  )
+}
+
 function Figure({ heightCm, build, garment, colorHex, reducedMotion, GarmentModel }: MannequinProps) {
   const group = useRef<THREE.Group>(null)
   const s = heightCm / 175
@@ -216,7 +240,7 @@ function Figure({ heightCm, build, garment, colorHex, reducedMotion, GarmentMode
     <group ref={group} scale={[s, s, s]}>
       <Body bx={bx} />
       {GarmentModel && garment ? (
-        <GarmentModel type={garment.garment} color={colorHex ?? BONE} />
+        <ExternalGarment C={GarmentModel} type={garment.garment} color={colorHex ?? BONE} bx={bx} />
       ) : (
         garment && <GarmentShell g={garment} bx={bx} />
       )}

@@ -18,8 +18,11 @@ export interface TopBodyOpts {
   shoulderW: number
   depth: number
   sq: number
-  waist?: { y: number; w: number }
+  waist?: { y: number; w: number; d?: number }
   blouse?: number
+  shoulderSq?: number
+  shoulderD?: number
+  chest?: number
 }
 
 export function topLevels(o: TopBodyOpts): TorsoLevel[] {
@@ -33,10 +36,10 @@ export function topLevels(o: TopBodyOpts): TorsoLevel[] {
     L.push({ y: o.hemY, w: 0.31 * W, d: 0.152 * D, sq: o.sq })
     L.push({ y: o.hemY + 0.06, w: 0.312 * W, d: 0.154 * D, sq: o.sq })
   }
-  if (o.waist) L.push({ y: o.waist.y, w: o.waist.w * W, d: 0.15 * D, sq: o.sq })
+  if (o.waist) L.push({ y: o.waist.y, w: o.waist.w * W, d: (o.waist.d ?? 0.15) * D, sq: o.sq })
   else L.push({ y: mix(o.hemY, 0.06, 0.55), w: 0.315 * W, d: 0.158 * D, sq: o.sq })
-  L.push({ y: 0.08, w: 0.31 * W, d: 0.153 * D, sq: o.sq })
-  L.push({ y: (th) => o.shoulderY - 0.03 * Math.cos(th) ** 2, w: o.shoulderW * W, d: 0.136 * D, sq: o.sq + 0.3 })
+  L.push({ y: 0.08, w: (o.chest ?? 0.31) * W, d: 0.153 * D, sq: o.sq })
+  L.push({ y: (th) => o.shoulderY - 0.03 * Math.cos(th) ** 2, w: o.shoulderW * W, d: (o.shoulderD ?? 0.136) * D, sq: o.shoulderSq ?? o.sq + 0.3 })
   L.push({ y: (th) => mix(o.neckFront, o.neckBack, (1 - Math.cos(th)) / 2), w: o.neckW, d: o.neckD, sq: 2, z: -0.012 })
   return L
 }
@@ -49,7 +52,7 @@ export function buildHoodie(k: Kit, variant: GarmentVariant) {
   const bandTop = hemY + 0.068
   const neckFront = 0.282, neckBack = 0.335
 
-  const levels = topLevels({ W, hemY, bandTop, neckFront, neckBack, neckW: 0.1, neckD: 0.09, shoulderY: 0.232, shoulderW: 0.318, depth: cocoon ? 1.06 : 1, sq: 2.8, blouse: cocoon ? 0.02 : 0.008 })
+  const levels = topLevels({ W, hemY, bandTop, neckFront, neckBack, neckW: 0.1, neckD: 0.09, shoulderY: 0.218, shoulderW: 0.312, depth: cocoon ? 0.98 : 0.9, sq: 2.8, blouse: cocoon ? 0.02 : 0.008 })
   const nu = k.n(120, 32), nv = k.n(100, 26)
   const bandFrac = 0.1
   const jb = Math.round(bandFrac * nv)
@@ -80,7 +83,7 @@ export function buildHoodie(k: Kit, variant: GarmentVariant) {
   const torso = buildSurface(tf, { nu, nv, wrapU: true, displace: torsoDisp })
   k.items.push({ part: 'body', geometry: torso.geometry(jb, nv), mat: 'fabric', interior: true })
   k.items.push({ part: 'body', geometry: torso.geometry(0, jb), mat: 'rib', interior: true })
-  k.rim('body', torso.row(0, nu), 0.0045, { closed: true, mat: 'rib' })
+  k.rim('body', torso.row(0, nu), 0.0045, { closed: true })
   k.stitch('body', torso.row((jb + 1.2) / nv, nu, 0.0012), { closed: true })
   k.stitch('body', torso.row((jb + 2.6) / nv, nu, 0.0012), { closed: true })
   k.setExplode('body', [0, 0, 0])
@@ -104,7 +107,7 @@ export function buildHoodie(k: Kit, variant: GarmentVariant) {
     const s = sleeveSurface({ keys, cuffT: jc / snv, ribCount: 40, stack: 1.0, twist: 0.8, noiseAmp: 0.0028, seed: 2 }, side, snu, snv)
     k.items.push({ part, geometry: s.geometry(0, jc), mat: 'fabric', interior: true })
     k.items.push({ part, geometry: s.geometry(jc, snv), mat: 'rib', interior: true })
-    k.rim(part, s.row(1, snu), 0.0042, { closed: true, mat: 'rib' })
+    k.rim(part, s.row(1, snu), 0.0042, { closed: true })
     k.stitch(part, s.row((jc - 1.0) / snv, snu, 0.0012), { closed: true })
     k.setExplode(part, [side * 0.55, -0.05, 0])
   }
@@ -116,7 +119,7 @@ export function buildHoodie(k: Kit, variant: GarmentVariant) {
     ring(0.3, [0, 0.47, 0.03], [0, 0.05, -1], 0.148, 0.192, 2.2),
     ring(0.6, [0, 0.462, -0.062], [0, 0.12, -1], 0.146, 0.183, 2.2),
     ring(0.84, [0, 0.438, -0.13], [0, 0.42, -1], 0.112, 0.15, 2.1),
-    ring(1, [0, 0.405, -0.168], [0, 0.85, -1], 0.004, 0.006, 2),
+    ring(1, [0, 0.405, -0.168], [0, 0.85, -1], 0.0002, 0.0003, 2),
   ]
   const hfn = ringLoftFn(hoodKeys, new THREE.Vector3(0, 1, 0), (th, t, st) => {
     // bury the lower part of each ring inside the body (neck seam), fading out at the back point
@@ -148,6 +151,7 @@ export function buildHoodie(k: Kit, variant: GarmentVariant) {
   k.stitch('hood', hood.col(1 - 0.012, 0.04, 0.97, 40, 0.0013))
   k.setExplode('hood', [0, 0.32, -0.12])
   k.cavity('body', new THREE.Vector3(0, 0.25, -0.01), 0.1, 0.09)
+  k.cavity('body', new THREE.Vector3(0, 0.265, -0.035), 0.15, 0.1)
 
   // ---- projector for details on the body
   const bodyProj = k.projector(['body'])

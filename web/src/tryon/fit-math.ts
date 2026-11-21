@@ -171,6 +171,8 @@ export interface SleeveInfo {
   centroid: Vec
   /** Polygon (image px) that encloses the sleeve region. */
   region: Vec[]
+  /** Region removed from the torso layer when the sleeve is articulated (sleeve minus shoulder cap). */
+  torsoCut: Vec[]
   /** Whether the sleeve is separated from the body by transparent pixels (safe to articulate). */
   articulable: boolean
 }
@@ -331,23 +333,29 @@ export function analyzeGarmentAlpha(
       let mass = 0,
         cx = 0,
         cy = 0
+      let lastSleeveY = anchorY
       for (let y = anchorY; y <= y1; y += step) {
         const runs = side === 'left' ? rowRuns(data, w, y, 0, midX, thr) : rowRuns(data, w, y, midX, w, thr).reverse()
         // For the right side, normalise runs so that runs[0] is the outermost.
         let b = prevB
+        let sleeveHere = !gapSeen
         if (runs.length >= 2) {
           const outer = runs[0],
             inner = runs[1]
           b = side === 'left' ? (outer[1] + inner[0]) / 2 : (inner[1] + outer[0]) / 2
           gapSeen = true
+          sleeveHere = true
         } else if (runs.length === 1) {
           const run = runs[0]
           const runOuter = side === 'left' ? run[0] : run[1]
           if (!gapSeen) b = cutX
-          else if (side === 'left' ? runOuter < prevB - 2 : runOuter > prevB + 2) b = prevB
-          else b = side === 'left' ? run[0] - 1 : run[1] + 1
+          else if (side === 'left' ? runOuter < prevB - 2 : runOuter > prevB + 2) {
+            b = prevB
+            sleeveHere = true
+          } else b = side === 'left' ? run[0] - 3 : run[1] + 3
         }
         prevB = b
+        if (sleeveHere) lastSleeveY = y
         boundary.push({ x: b, y })
         // sleeve alpha mass (outer side of boundary)
         const xa = side === 'left' ? 0 : Math.max(0, Math.ceil(b))
@@ -364,17 +372,22 @@ export function analyzeGarmentAlpha(
       if (mass <= 0) continue
       const centroid = { x: cx / mass, y: cy / mass }
       const outerX = side === 'left' ? -2 : w + 2
-      const region: Vec[] = [
-        { x: outerX, y: topY },
-        { x: cutX, y: topY },
-        ...boundary,
-        { x: outerX, y: y1 + 2 },
-      ]
+      // Close the polygon just below the cuff so no body pixels ride along with the sleeve.
+      const endY = Math.min(y1 + 2, lastSleeveY + step * 2)
+      const kept = boundary.filter((p) => p.y <= endY)
       const pivot = { x: cutX, y: anchorY + 0.06 * sw }
+      const region: Vec[] = [{ x: outerX, y: topY }, { x: cutX, y: topY }, ...kept, { x: outerX, y: endY }]
+      // The torso keeps the shoulder cap above the pivot; only the sleeve below it is cut away.
+      const torsoCut: Vec[] = [
+        { x: outerX, y: pivot.y },
+        { x: cutX, y: pivot.y },
+        ...kept.filter((p) => p.y > pivot.y),
+        { x: outerX, y: endY },
+      ]
       // A sleeve is only worth articulating if it's clearly outside the body and has real mass.
       const totalMass = wSum * 255 * 4 // approximate (sampled every 2px both axes)
       const relMass = (mass * 2 * step) / Math.max(1, totalMass)
-      sleeves[side] = { pivot, centroid, region, articulable: gapSeen && relMass > 0.01 }
+      sleeves[side] = { pivot, centroid, region, torsoCut, articulable: gapSeen && relMass > 0.01 }
     }
   }
 
@@ -545,8 +558,10 @@ export function computeTopFit(p: BodyPoints, meta: GarmentMeta, opts: FitOptions
       const cScreen = applyMatrix(m, info.centroid)
       const rest = Math.atan2(cScreen.y - pivotScreen.y, cScreen.x - pivotScreen.x)
       const arm = Math.atan2(elbow.y - shoulder.y, elbow.x - shoulder.x)
-      let delta = normAngle(arm - rest)
-      if (Math.abs(delta) < (7 * Math.PI) / 180) delta = 0
+      // Soft dead-zone: arms near rest keep the untouched render, then articulation eases in.
+      const raw = normAngle(arm - rest)
+      const dz = (7 * Math.PI) / 180
+      let delta = Math.abs(raw) <= dz ? 0 : raw - Math.sign(raw) * dz
       delta = clamp(delta, -maxD, maxD)
       fit.sleeves[side] = { info, pivotScreen, delta }
     }

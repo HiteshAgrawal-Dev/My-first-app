@@ -5,7 +5,7 @@ import * as THREE from 'three'
  * DataTexture (no network, no image files) and cached for the lifetime of the page.
  */
 
-export type WeaveKind = 'knit' | 'loopback' | 'rib' | 'ripstop' | 'twill' | 'crepe' | 'velvet' | 'nylon' | 'gabardine'
+export type WeaveKind = 'cotton' | 'knit' | 'loopback' | 'rib' | 'ripstop' | 'twill' | 'crepe' | 'velvet' | 'nylon' | 'gabardine'
 
 const cache = new Map<string, THREE.DataTexture>()
 
@@ -45,6 +45,8 @@ const smooth = (e0: number, e1: number, x: number) => {
 
 /** Height field generators, x,y in [0,1). */
 const HEIGHTS: Record<WeaveKind, (x: number, y: number) => number> = {
+  // brushed cotton: random fibre grain + soft slubs (no regular pattern → no moiré at catalogue sizes)
+  cotton: (x, y) => tfbm(x * 48, y * 48, 48, 3, 13) * 0.55 + tfbm(x * 12, y * 12, 12, 3, 17) * 0.45,
   // single jersey: columns of interlocking V loops
   knit: (x, y) => {
     const W = 48, H = 64
@@ -83,14 +85,14 @@ const HEIGHTS: Record<WeaveKind, (x: number, y: number) => number> = {
     const gx = Math.abs(((x * G) % 1) - 0.5) * 2, gy = Math.abs(((y * G) % 1) - 0.5) * 2
     const grid = Math.max(smooth(0.86, 0.97, gx), smooth(0.86, 0.97, gy))
     const crinkle = tfbm(x * 6, y * 6, 6, 3, 41)
-    return chk * 0.35 + grid * 0.9 + crinkle * 0.5
+    return chk * 0.3 + grid * 0.45 + crinkle * 0.6
   },
   nylon: (x, y) => {
     const G = 8
     const gx = Math.abs(((x * G) % 1) - 0.5) * 2, gy = Math.abs(((y * G) % 1) - 0.5) * 2
     const grid = Math.max(smooth(0.9, 0.98, gx), smooth(0.9, 0.98, gy))
     const crinkle = tfbm(x * 5, y * 5, 5, 4, 51)
-    return grid * 0.18 + crinkle * 0.9
+    return grid * 0.05 + crinkle * 0.9
   },
   twill: (x, y) => {
     const N = 64
@@ -139,7 +141,7 @@ export function fabricNormalMap(kind: WeaveKind, size = 512): THREE.DataTexture 
   const key = `n:${kind}:${size}`
   const hit = cache.get(key)
   if (hit) return hit
-  const strength = kind === 'velvet' || kind === 'nylon' ? 1.2 : kind === 'crepe' ? 2.2 : 3.0
+  const strength = kind === 'velvet' || kind === 'nylon' ? 1.2 : kind === 'crepe' || kind === 'cotton' ? 2.2 : 3.0
   const data = makeNormalFromHeight(size, HEIGHTS[kind], strength)
   const tex = new THREE.DataTexture(data, size, size, THREE.RGBAFormat)
   tex.wrapS = tex.wrapT = THREE.RepeatWrapping

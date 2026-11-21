@@ -33,7 +33,7 @@ const mode = q.get('mode') ?? 'product'
 const view = (q.get('view') ?? 'front') as 'front' | 'back' | 'side'
 const bg = q.get('bg') ?? 'transparent'
 
-const VIEW_ROT: Record<string, number> = { front: -0.19, back: Math.PI + 0.12, side: -1.32 }
+const VIEW_ROT: Record<string, number> = { front: -0.19, back: Math.PI + 0.12, side: -1.12 }
 
 function markReady(frames = 4) {
   let n = 0

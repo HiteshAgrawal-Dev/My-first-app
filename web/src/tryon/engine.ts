@@ -115,7 +115,7 @@ export class TryOnEngine {
   private detectSamples = 0
   private triedCpu = false
 
-  private smoother = new LandmarkSmoother(1.2, 6)
+  private smoother = new LandmarkSmoother(0.9, 5)
   private landmarks: Landmark[] | null = null
   private lastSeen = 0
   private lastDetect = 0
@@ -179,6 +179,7 @@ export class TryOnEngine {
   /** Request the front camera and start the live tracking loop. Throws CameraError. */
   async startCamera(): Promise<void> {
     this.stopSource()
+    this.resetFailedModel()
     const session = ++this.session
     if (typeof window !== 'undefined' && window.isSecureContext === false) throw new CameraError('insecure')
     if (!navigator.mediaDevices?.getUserMedia) throw new CameraError('no-camera')
@@ -219,6 +220,7 @@ export class TryOnEngine {
   /** Run the same pipeline on a still image (IMAGE running mode). */
   async startPhoto(file: Blob): Promise<void> {
     this.stopSource()
+    this.resetFailedModel()
     const session = ++this.session
     const url = URL.createObjectURL(file)
     const img = new Image()
@@ -299,6 +301,14 @@ export class TryOnEngine {
   }
 
   // ------------------------------------------------------------------ model
+
+  /** Allow a fresh model download attempt after a failure (called on explicit user retries). */
+  private resetFailedModel(): void {
+    if (this.model !== 'failed') return
+    this.model = 'idle'
+    this.posePromise = null
+    this.triedCpu = false
+  }
 
   private async ensurePose(mode: 'VIDEO' | 'IMAGE'): Promise<LoadedPose | null> {
     if (this.model === 'failed') return null
@@ -385,7 +395,7 @@ export class TryOnEngine {
       const v = this.video
       if (v && v.readyState >= 2 && v.videoWidth > 0) {
         // ≤30 fps, and never let detection eat more than ~70% of the main thread.
-        if (now - this.lastDetect >= Math.max(32, this.detectCost * 1.4)) {
+        if (now - this.lastDetect >= Math.min(1000, Math.max(32, this.detectCost * 1.4))) {
           this.lastDetect = now
           this.detect(v)
         }
@@ -412,9 +422,10 @@ export class TryOnEngine {
     this.lastTs = ts
     try {
       const res = this.pose.landmarker.detectForVideo(v, ts)
-      const cost = performance.now() - t
-      this.detectCost = this.detectSamples++ ? this.detectCost * 0.85 + cost * 0.15 : cost
-      if (this.pose.delegate === 'GPU' && !this.triedCpu && this.detectSamples > 12 && this.detectCost > 110) {
+      // First calls include shader compilation / warm-up — don't let them skew the estimate.
+      const cost = Math.min(1000, performance.now() - t)
+      if (this.detectSamples++ >= 3) this.detectCost = this.detectCost ? this.detectCost * 0.85 + cost * 0.15 : cost
+      if (this.pose.delegate === 'GPU' && !this.triedCpu && this.detectSamples > 15 && this.detectCost > 110) {
         // Software-emulated / weak GPUs are often slower than the WASM CPU path.
         console.info(`[tryon] GPU detection slow (${Math.round(this.detectCost)} ms) — trying CPU delegate`)
         void this.fallbackToCpu()
@@ -572,15 +583,23 @@ export class TryOnEngine {
       L.setTransform(...m)
       L.drawImage(g.canvas, 0, 0)
     } else {
-      // Sleeves behind the torso; a few intermediate copies fill the underarm wedge.
+      // Sleeves behind the torso. Partial copies clipped near the shoulder fill the underarm
+      // wedge (reads like bunched fabric) without fanning out the whole sleeve.
+      const poly = (pts: Vec[]) => pts.forEach((p, i) => (i ? L.lineTo(p.x, p.y) : L.moveTo(p.x, p.y)))
       for (const s of art) {
-        for (const k of [0.4, 0.7, 1]) {
+        const reach = Math.hypot(s.info.centroid.x - s.info.pivot.x, s.info.centroid.y - s.info.pivot.y) * 0.75
+        for (const k of [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1]) {
           L.save()
           L.setTransform(...rotateAbout(m, s.pivotScreen, s.delta * k))
           L.beginPath()
-          s.info.region.forEach((p, i) => (i ? L.lineTo(p.x, p.y) : L.moveTo(p.x, p.y)))
+          poly(s.info.region)
           L.closePath()
           L.clip()
+          if (k < 1) {
+            L.beginPath()
+            L.arc(s.info.pivot.x, s.info.pivot.y, reach, 0, Math.PI * 2)
+            L.clip()
+          }
           L.drawImage(g.canvas, 0, 0)
           L.restore()
         }
@@ -590,7 +609,7 @@ export class TryOnEngine {
       L.beginPath()
       L.rect(-4, -4, g.canvas.width + 8, g.canvas.height + 8)
       for (const s of art) {
-        s.info.region.forEach((p, i) => (i ? L.lineTo(p.x, p.y) : L.moveTo(p.x, p.y)))
+        poly(s.info.torsoCut)
         L.closePath()
       }
       L.clip('evenodd')
@@ -783,7 +802,7 @@ export function mapCameraError(e: unknown): CameraError {
 
 export const CAMERA_ERROR_COPY: Record<CameraErrorCode, { title: string; body: string }> = {
   denied: {
-    title: 'Camera access is blocked',
+    title: 'Camera permission needed',
     body: 'Camera access is blocked. Allow it in your browser’s site settings, or try a photo instead.',
   },
   'no-camera': {

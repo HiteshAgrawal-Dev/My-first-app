@@ -78,7 +78,7 @@ export class Kit {
       seg: Math.max(16, Math.round(this.lenOf(pts) / 0.008)),
       radial: opts.radial ?? 7,
     })
-    this.items.push({ part, geometry: g, mat: opts.mat ?? 'fabric', castShadow: true })
+    this.items.push({ part, geometry: g, mat: opts.mat ?? 'trim', castShadow: true })
     return g
   }
 
@@ -102,6 +102,25 @@ export class Kit {
     m.updateMatrix()
     g.applyMatrix4(m.matrix)
     this.items.push({ part, geometry: g, mat: 'cavity', castShadow: false })
+  }
+
+  /** Point on a body-like surface at angle θ (0 = front, π/2 = +X) and height y, via a horizontal ray toward the axis. */
+  static pointAt(proj: Projector, th: number, y: number, off: number, axisZ = 0, out = new THREE.Vector3(), nOut = new THREE.Vector3()) {
+    const o = new THREE.Vector3(Math.sin(th) * 2, y, Math.cos(th) * 2 + axisZ)
+    const d = new THREE.Vector3(-Math.sin(th), 0, -Math.cos(th))
+    if (!proj.cast(o, d, out, nOut)) return null
+    return out.addScaledVector(nOut, off)
+  }
+
+  /** Horizontal ring of points around a body at height y(θ). */
+  static ringAt(proj: Projector, y: (th: number) => number, off: number, th0 = 0, th1 = Math.PI * 2, n = 120, axisZ = 0) {
+    const pts: THREE.Vector3[] = []
+    for (let i = 0; i <= n; i++) {
+      const th = th0 + (th1 - th0) * (i / n)
+      const p = Kit.pointAt(proj, th, y(th), off, axisZ)
+      if (p) pts.push(p.clone())
+    }
+    return pts
   }
 
   /** Projector for laying details on everything built so far for a part (or given geometries). */
@@ -176,7 +195,9 @@ export function makeMaterials(color: string, accent: string, fabric: FabricKind,
   const isDark = lum < 0.05
   const fabricM = fabricMaterial({ color, fabric, vertexColors: true })
   const rib = fabricMaterial({ color: shade(color, isDark ? 0.0 : -0.015), fabric: ribFabric, vertexColors: true })
-  const trim = fabricMaterial({ color: shade(color, isDark ? 0.01 : -0.02), fabric, vertexColors: true, tileScale: 0.8 })
+  const trim = fabricMaterial({ color: shade(color, isDark ? 0.005 : -0.03), fabric, vertexColors: true, tileScale: 0.8 })
+  trim.sheen *= 0.7
+  trim.normalScale.multiplyScalar(0.4)
   const liningColor = type === 'blazer' || type === 'corset' ? shade(color, isDark ? 0.02 : -0.12, -0.05) : shade(color, -0.04)
   const lining = fabricMaterial({ color: liningColor, fabric: type === 'blazer' || type === 'corset' ? 'satin' : fabric, vertexColors: true })
   const interior = interiorMaterial(color, fabric)

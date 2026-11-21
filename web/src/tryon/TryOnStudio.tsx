@@ -10,7 +10,7 @@ const Mannequin = lazy(() => import('./Mannequin'))
 
 // Optional richer 3D garments from a sibling module; resolved at build time, empty if absent.
 const garmentModules = import.meta.glob('../garments/index.ts') as Record<string, () => Promise<Record<string, unknown>>>
-const USE_EXTERNAL_GARMENTS = false
+const USE_EXTERNAL_GARMENTS = true
 
 interface Notice {
   title: string
@@ -265,7 +265,7 @@ export function TryOnStudio(props: TryOnStudioProps) {
       }
       if (e.key !== 'Tab' || !rootRef.current) return
       const scope = (snapshot && rootRef.current.querySelector<HTMLElement>('.vt-snapshot')) || rootRef.current
-      const els = Array.from(scope.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.offsetParent !== null || el === document.activeElement)
+      const els = Array.from(scope.querySelectorAll<HTMLElement>(FOCUSABLE)).filter((el) => el.tabIndex >= 0 && (el.offsetParent !== null || el === document.activeElement))
       if (!els.length) return
       const first = els[0],
         last = els[els.length - 1]

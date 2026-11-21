@@ -71,8 +71,8 @@ export function GarmentStage({
         color="#fff3e6"
         castShadow={shadows}
         shadow-mapSize={[2048, 2048]}
-        shadow-bias={-0.0003}
-        shadow-normalBias={0.012}
+        shadow-bias={-0.0008}
+        shadow-normalBias={0.035}
         shadow-radius={6}
         shadow-camera-left={-1.3}
         shadow-camera-right={1.3}
@@ -82,8 +82,8 @@ export function GarmentStage({
         shadow-camera-far={10}
       />
       {/* warm champagne rims from behind */}
-      <directionalLight position={[2.8, 2.2, -2.6]} intensity={(d ? 3.4 : 2.0) * k} color={CHAMPAGNE} />
-      <directionalLight position={[-3.0, 1.2, -2.2]} intensity={(d ? 1.6 : 1.1) * k} color="#e9d2b0" />
+      <directionalLight position={[2.8, 2.2, -2.6]} intensity={(d ? 3.6 : 2.8) * k} color={CHAMPAGNE} />
+      <directionalLight position={[-3.0, 1.2, -2.2]} intensity={(d ? 1.8 : 1.5) * k} color="#e9d2b0" />
       {/* cool fill, front-right low */}
       <directionalLight position={[2.8, 0.3, 2.0]} intensity={(d ? 0.3 : 0.55) * k} color="#b9c6e4" />
       <Environment resolution={256} frames={1} environmentIntensity={(d ? 0.45 : 0.7) * k}>

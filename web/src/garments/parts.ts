@@ -74,11 +74,13 @@ export function drapeFolds(p: THREE.Vector3, amp: number, freq: number, seed = 0
 /** Folds radiating from a point (armpits, crotch, waist cinch). */
 export function radialFolds(p: THREE.Vector3, cx: number, cy: number, count: number, reach: number, amp: number, seed = 0) {
   const dx = Math.abs(p.x) - cx, dy = p.y - cy
-  const d = Math.hypot(dx, dy)
-  const phi = Math.atan2(dy, dx)
-  const n = noise.noise(phi * 2 + seed, d * 6, p.z * 4) * 1.6
-  const fall = Math.exp(-d / reach) * smoothstep(0.0, 0.03, d)
-  return amp * Math.sin(phi * count + n) * fall
+  const d = Math.hypot(dx, dy) + 1e-6
+  const c = dx / d, s = dy / d
+  // folds fan out from the point into the body (dx < 0 side), continuous everywhere
+  const n = noise.noise(c * 1.7 + seed, s * 1.7, d * 6 + p.z * 3) * 1.6
+  const fan = Math.max(0, -c) // only toward the body centre
+  const fall = Math.exp(-d / reach) * smoothstep(0.0, 0.03, d) * fan
+  return amp * Math.sin(Math.atan2(s, -c) * count + n) * fall
 }
 
 // ---------------------------------------------------------------------------------------------

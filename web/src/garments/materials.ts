@@ -32,19 +32,19 @@ interface FabricSpec {
 }
 
 export const FABRICS: Record<FabricKind, FabricSpec> = {
-  loopback: { weave: 'loopback', tile: 0.055, normalScale: 0.55, roughness: 0.9, sheen: 1, sheenRoughness: 0.55, sheenLift: 0.35, specularIntensity: 0.35 },
+  loopback: { weave: 'cotton', tile: 0.12, normalScale: 0.35, roughness: 0.9, sheen: 1, sheenRoughness: 0.55, sheenLift: 0.35, specularIntensity: 0.35 },
   velour: { weave: 'velvet', tile: 0.18, normalScale: 0.35, roughness: 0.95, sheen: 1, sheenRoughness: 0.32, sheenLift: 0.6, specularIntensity: 0.25 },
-  terry: { weave: 'knit', tile: 0.05, normalScale: 0.5, roughness: 0.88, sheen: 0.9, sheenRoughness: 0.5, sheenLift: 0.32, specularIntensity: 0.35 },
-  jersey: { weave: 'knit', tile: 0.045, normalScale: 0.45, roughness: 0.85, sheen: 0.7, sheenRoughness: 0.55, sheenLift: 0.25, specularIntensity: 0.4 },
-  rib: { weave: 'rib', tile: 0.06, normalScale: 0.9, roughness: 0.82, sheen: 0.8, sheenRoughness: 0.5, sheenLift: 0.28, specularIntensity: 0.4 },
-  ripstop: { weave: 'ripstop', tile: 0.07, normalScale: 0.45, roughness: 0.55, sheen: 0.35, sheenRoughness: 0.45, sheenLift: 0.2, clearcoat: 0.18, clearcoatRoughness: 0.5, specularIntensity: 0.6 },
-  nylon: { weave: 'nylon', tile: 0.22, normalScale: 0.35, roughness: 0.42, sheen: 0.25, sheenRoughness: 0.4, sheenLift: 0.2, clearcoat: 0.65, clearcoatRoughness: 0.32, specularIntensity: 0.7 },
+  terry: { weave: 'cotton', tile: 0.1, normalScale: 0.3, roughness: 0.88, sheen: 0.9, sheenRoughness: 0.5, sheenLift: 0.32, specularIntensity: 0.35 },
+  jersey: { weave: 'cotton', tile: 0.1, normalScale: 0.28, roughness: 0.85, sheen: 0.7, sheenRoughness: 0.55, sheenLift: 0.25, specularIntensity: 0.4 },
+  rib: { weave: 'rib', tile: 0.12, normalScale: 0.32, roughness: 0.82, sheen: 0.8, sheenRoughness: 0.5, sheenLift: 0.28, specularIntensity: 0.4 },
+  ripstop: { weave: 'ripstop', tile: 0.045, normalScale: 0.3, roughness: 0.55, sheen: 0.35, sheenRoughness: 0.45, sheenLift: 0.2, clearcoat: 0.18, clearcoatRoughness: 0.5, specularIntensity: 0.6 },
+  nylon: { weave: 'nylon', tile: 0.22, normalScale: 0.35, roughness: 0.48, sheen: 0.3, sheenRoughness: 0.4, sheenLift: 0.2, clearcoat: 0.45, clearcoatRoughness: 0.38, specularIntensity: 0.7 },
   satin: { weave: 'nylon', tile: 0.25, normalScale: 0.25, roughness: 0.3, sheen: 0.4, sheenRoughness: 0.3, sheenLift: 0.3, clearcoat: 0.9, clearcoatRoughness: 0.2, specularIntensity: 0.9 },
-  iridescent: { weave: 'nylon', tile: 0.22, normalScale: 0.3, roughness: 0.32, sheen: 0.3, sheenRoughness: 0.35, sheenLift: 0.25, clearcoat: 0.9, clearcoatRoughness: 0.22, iridescence: 0.75, specularIntensity: 0.9 },
+  iridescent: { weave: 'nylon', tile: 0.22, normalScale: 0.3, roughness: 0.42, sheen: 0.35, sheenRoughness: 0.35, sheenLift: 0.25, clearcoat: 0.5, clearcoatRoughness: 0.3, iridescence: 0.55, specularIntensity: 0.9 },
   wool: { weave: 'twill', tile: 0.06, normalScale: 0.4, roughness: 0.82, sheen: 0.55, sheenRoughness: 0.5, sheenLift: 0.22, specularIntensity: 0.45 },
   gabardine: { weave: 'gabardine', tile: 0.05, normalScale: 0.35, roughness: 0.72, sheen: 0.5, sheenRoughness: 0.45, sheenLift: 0.22, specularIntensity: 0.5 },
   crepe: { weave: 'crepe', tile: 0.05, normalScale: 0.4, roughness: 0.86, sheen: 0.45, sheenRoughness: 0.55, sheenLift: 0.2, specularIntensity: 0.4 },
-  silkVelvet: { weave: 'velvet', tile: 0.16, normalScale: 0.3, roughness: 0.92, sheen: 1, sheenRoughness: 0.25, sheenLift: 0.75, specularIntensity: 0.3 },
+  silkVelvet: { weave: 'velvet', tile: 0.16, normalScale: 0.3, roughness: 0.92, sheen: 1, sheenRoughness: 0.3, sheenLift: 0.5, specularIntensity: 0.3 },
 }
 
 function lift(c: THREE.Color, amt: number) {
@@ -53,7 +53,7 @@ function lift(c: THREE.Color, amt: number) {
   const out = new THREE.Color()
   // dark colours need a stronger lift for the velvet "glow"; light colours sheen toward white
   const l = hsl.l + (1 - hsl.l) * amt
-  out.setHSL(hsl.h, Math.min(1, hsl.s * 0.9 + 0.05), l)
+  out.setHSL(hsl.h, Math.min(1, hsl.s * 0.5 + 0.03), l)
   return out
 }
 
