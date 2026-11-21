@@ -9,7 +9,7 @@ const require = createRequire(import.meta.url)
 export const { chromium } = require('playwright')
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 export const WEB = path.join(ROOT, 'web')
-export const BASE = process.env.RENDER_BASE ?? 'http://localhost:5199'
+export const BASE = process.env.RENDER_BASE ?? 'http://localhost:5180'
 
 // SwiftShader (CPU) WebGL2 works headless with these flags; real GPUs are picked up automatically.
 export const GL_ARGS = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--enable-webgl']
@@ -19,7 +19,7 @@ export async function ensureServer() {
     const r = await fetch(BASE + '/render.html')
     if (r.ok) return null
   } catch {}
-  const port = new URL(BASE).port || '5199'
+  const port = new URL(BASE).port || '5180'
   const child = spawn('npx', ['vite', '--port', port, '--strictPort'], { cwd: WEB, stdio: 'ignore', detached: true })
   for (let i = 0; i < 60; i++) {
     await new Promise((r) => setTimeout(r, 500))

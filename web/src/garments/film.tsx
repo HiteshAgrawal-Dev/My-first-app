@@ -108,7 +108,7 @@ function beamMaterial(color = CHAMPAGNE, strength = 0.22) {
     vertexShader: /* glsl */ `varying vec2 vUv; varying vec3 vN; varying vec3 vV;
       void main(){ vUv = uv; vec4 mv = modelViewMatrix * vec4(position,1.0); vN = normalize(normalMatrix * normal); vV = normalize(-mv.xyz); gl_Position = projectionMatrix * mv; }`,
     fragmentShader: /* glsl */ `uniform vec3 uColor; uniform float uStrength; varying vec2 vUv; varying vec3 vN; varying vec3 vV;
-      void main(){ float f = pow(abs(dot(vN, vV)), 2.5); float along = pow(vUv.y, 1.6) * smoothstep(0.0, 0.15, vUv.y);
+      void main(){ float f = pow(abs(dot(vN, vV)), 2.5); float along = pow(vUv.y, 0.9) * smoothstep(0.0, 0.25, vUv.y);
         float a = f * along * uStrength; gl_FragColor = vec4(uColor * a, a); }`,
   })
 }
@@ -196,7 +196,7 @@ export function FilmScene({ time, vertical = false }: { time: TimeRef; vertical?
         const g = buildGarment(c.type, { color: c.color, variant: c.variant, fabric: c.fabric, detail: 'high' })
         const holder = new THREE.Group()
         holder.add(g)
-        holder.position.set(...c.pos)
+        holder.position.set(c.pos[0] * 0.88, c.pos[1], c.pos[2] * 0.88)
         holder.scale.setScalar(c.scale ?? 1)
         return { c, holder, g }
       }),
@@ -213,20 +213,20 @@ export function FilmScene({ time, vertical = false }: { time: TimeRef; vertical?
     g.translate(0, -2.75, 0) // apex at the origin, pointing down -Y
     return g
   }, [])
-  const beamMatA = useMemo(() => beamMaterial(CHAMPAGNE, 0.3), [])
-  const beamMatB = useMemo(() => beamMaterial('#e8d2ae', 0.2), [])
+  const beamMatA = useMemo(() => beamMaterial(CHAMPAGNE, 0.8), [])
+  const beamMatB = useMemo(() => beamMaterial('#e8d2ae', 0.5), [])
 
   useFrame(() => {
     const t = time.t
     const p = (t / FILM_DURATION) * TAU
     // camera: one full, slow revolution per loop, breathing in and out between the garments
     const az = p + 0.35
-    const R = vertical ? 4.7 + 0.3 * Math.cos(p * 2) : 3.75 + 0.3 * Math.cos(p * 2)
+    const R = vertical ? 5.2 + 0.3 * Math.cos(p * 2) : 4.35 + 0.3 * Math.cos(p * 2)
     const camY = 0.22 + 0.16 * Math.sin(p) + 0.05 * Math.sin(p * 3)
     camera.position.set(Math.sin(az) * R, camY, Math.cos(az) * R)
     const look = new THREE.Vector3(0.15 * Math.sin(p * 2), 0.08, 0.15 * Math.cos(p * 2))
     camera.lookAt(look)
-    camera.fov = vertical ? 44 : 30
+    camera.fov = vertical ? 42 : 27
     camera.updateProjectionMatrix()
 
     for (const { c, holder, g } of garments) {
@@ -311,7 +311,7 @@ export function SeqScene({ time }: { time: TimeRef }) {
       if (name === 'pocket') g.rotation.x = 0.18 * e
     }
     holder.position.y = 0.03 * Math.sin(TAU * t)
-    camera.position.set(0, 0.22, 3.35)
+    camera.position.set(0, 0.2, 2.95)
     camera.lookAt(0, 0.0, 0)
     camera.fov = 30
     camera.updateProjectionMatrix()
@@ -319,12 +319,12 @@ export function SeqScene({ time }: { time: TimeRef }) {
   return (
     <>
       <color attach="background" args={['#0e0a0e']} />
-      <GarmentStage mood="dramatic" shadow={false} intensity={1.15}>
+      <GarmentStage mood="studio" shadow={false} intensity={1.1} exposure={1.35}>
         <primitive object={holder} />
       </GarmentStage>
       <mesh position={[0, 0.15, -2.4]}>
         <planeGeometry args={[5.5, 5.5]} />
-        <meshBasicMaterial map={glow} color="#4a2c40" transparent opacity={0.55} depthWrite={false} />
+        <meshBasicMaterial map={glow} color="#6a3f5a" transparent opacity={0.6} depthWrite={false} />
       </mesh>
     </>
   )

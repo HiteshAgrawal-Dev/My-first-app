@@ -587,8 +587,10 @@ export class TryOnEngine {
       // wedge (reads like bunched fabric) without fanning out the whole sleeve.
       const poly = (pts: Vec[]) => pts.forEach((p, i) => (i ? L.lineTo(p.x, p.y) : L.moveTo(p.x, p.y)))
       for (const s of art) {
-        const reach = Math.hypot(s.info.centroid.x - s.info.pivot.x, s.info.centroid.y - s.info.pivot.y) * 0.75
-        for (const k of [0.15, 0.3, 0.45, 0.6, 0.75, 0.9, 1]) {
+        const reach = Math.hypot(s.info.centroid.x - s.info.pivot.x, s.info.centroid.y - s.info.pivot.y) * 0.6
+        const steps = Math.min(14, Math.max(4, Math.ceil(Math.abs(s.delta) / 0.06)))
+        for (let j = 1; j <= steps; j++) {
+          const k = j / steps
           L.save()
           L.setTransform(...rotateAbout(m, s.pivotScreen, s.delta * k))
           L.beginPath()

@@ -109,7 +109,7 @@ export function buildBlazer(k: Kit, _variant: GarmentVariant, corset: boolean) {
   }
   // hem rim + stitches
   k.rim('body', torso.row(0, nu).filter((p) => keep(p)), 0.004)
-  k.stitch('body', Kit.ringAt(proj, () => hemY + 0.03, 0.0011, 0.35, 2 * PI - 0.35, 100))
+  k.stitch('body', Kit.ringAt(proj, () => hemY + 0.03, 0.0011, 0.75, 2 * PI - 0.75, 100))
 
   // ---- lapels
   const lapelTip = corset ? { x: 0.165, y: 0.2 } : { x: 0.178, y: 0.19 }
