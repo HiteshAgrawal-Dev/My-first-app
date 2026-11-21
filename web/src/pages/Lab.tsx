@@ -5,6 +5,9 @@ import { useReveal } from '../lib/motion'
 import { useStore } from '../store/useStore'
 import Icon from '../components/Icon'
 import SafeBoundary from '../components/SafeBoundary'
+import Img from '../components/Img'
+import { LITE } from '../lib/perf'
+import { productImage } from '../lib/catalog'
 
 const ProductViewer = lazy(() => import('../three/ProductViewer'))
 
@@ -19,6 +22,7 @@ export default function Lab() {
   const p = products.find((x) => x.id === pid && x.garment === g) ?? options[0]
   const [ci, setCi] = useState(0)
   const color = p.colors[Math.min(ci, p.colors.length - 1)]
+  const [show3d, setShow3d] = useState(!LITE)
 
   return (
     <div ref={ref} className="page page--lab">
@@ -46,9 +50,11 @@ export default function Lab() {
         </div>
         <div className="lab__viewer">
           <div className="lab__ring" aria-hidden />
-          <SafeBoundary fallback={<div className="pdp__loading mono">3D preview isn’t available on this device</div>}><Suspense fallback={<div className="pdp__loading mono">Loading 3D…</div>}>
+          {!show3d ? (
+            <div className="lab__static"><Img src={productImage(p, Math.min(ci, p.colors.length - 1))} alt={p.name} tint={color.hex} priority /><button className="btn btn--ghost" onClick={() => setShow3d(true)}><Icon name="cube" size={16} /> Load 3D view</button></div>
+          ) : <SafeBoundary fallback={<div className="pdp__loading mono">3D preview isn’t available on this device</div>}><Suspense fallback={<div className="pdp__loading mono">Loading 3D…</div>}>
             <ProductViewer key={p.garment} type={p.garment} color={color.hex} />
-          </Suspense></SafeBoundary>
+          </Suspense></SafeBoundary>}
           <div className="lab__hud mono" aria-hidden><span>{p.name.toUpperCase()}</span><span>{p.gsm ? `${p.gsm}GSM` : p.material.split(',')[0].toUpperCase()}</span><span>DRAG · ROTATE</span></div>
         </div>
       </section>

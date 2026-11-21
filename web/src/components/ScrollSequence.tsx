@@ -1,9 +1,12 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { gsap, ScrollTrigger, reducedMotion } from '../lib/motion'
 import { asset } from '../lib/catalog'
+import { LITE } from '../lib/perf'
 
-const FRAMES = 90
-const src = (i: number) => asset(`/film/seq/frame-${String(i).padStart(3, '0')}.webp`)
+// Low-end devices load every third frame (30 instead of 90): a third of the data and decode work.
+const STEP = LITE ? 3 : 1
+const FRAMES = Math.ceil(90 / STEP)
+const src = (i: number) => asset(`/film/seq/frame-${String(Math.min(89, i * STEP)).padStart(3, '0')}.webp`)
 const CALLOUTS = [
   { at: 0.12, side: 'l', k: '500 GSM', t: 'Organic loopback cotton, twice the weight of a typical hoodie. It drapes rather than clings.' },
   { at: 0.34, side: 'r', k: 'Double-layer hood', t: 'Two layers of fabric with a hidden seam, so it stands up instead of collapsing flat.' },
@@ -22,13 +25,22 @@ export default function ScrollSequence() {
   const lastProg = useRef(0)
 
   useEffect(() => {
+    // Frames download only when the section is about to scroll into view.
+    const el = root.current
+    if (!el) return
+    let started = false
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting && !started) { started = true; io.disconnect(); load() } }, { rootMargin: '60% 0px' })
+    io.observe(el)
+    return () => io.disconnect()
+  }, [])
+
+  const load = () => {
     let alive = true
     const first = new Image()
     first.onerror = () => alive && setOk(false)
     imgs.current = Array.from({ length: FRAMES }, (_, i) => { const im = i === 0 ? first : new Image(); im.decoding = 'async'; im.src = src(i); if (i) im.onload = () => { if (Math.abs(i - lastIdx.current) < 3) draw(lastProg.current) }; return im })
-    first.onload = () => draw(0)
-    return () => { alive = false }
-  }, [])
+    first.onload = () => draw(lastProg.current)
+  }
 
   const draw = (prog: number) => {
     const c = canvas.current; if (!c) return
@@ -38,7 +50,7 @@ export default function ScrollSequence() {
     if (!im?.complete || !im.naturalWidth) { for (let k = i; k >= 0; k--) if (imgs.current[k]?.complete && imgs.current[k].naturalWidth) { im = imgs.current[k]; break } }
     if (!im?.naturalWidth) return
     const ctx = c.getContext('2d')!
-    const dpr = Math.min(devicePixelRatio, 2)
+    const dpr = Math.min(devicePixelRatio, LITE ? 1 : 2)
     const w = c.clientWidth * dpr, h = c.clientHeight * dpr
     if (c.width !== w || c.height !== h) { c.width = w; c.height = h }
     const s = Math.min(w / im.naturalWidth, h / im.naturalHeight) * 1.04

@@ -2,6 +2,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
+import { LITE } from './perf'
 
 gsap.registerPlugin(ScrollTrigger)
 export { gsap, ScrollTrigger }
@@ -14,7 +15,7 @@ export const getLenis = () => lenis
 /** Inertial smooth scrolling wired into GSAP's ticker so ScrollTrigger stays frame-perfect. */
 export function useSmoothScroll() {
   useEffect(() => {
-    if (reducedMotion()) return
+    if (reducedMotion() || LITE) return
     lenis = new Lenis({ duration: 1.15, smoothWheel: true, wheelMultiplier: 0.9 })
     lenis.on('scroll', ScrollTrigger.update)
     const raf = (t: number) => lenis?.raf(t * 1000)

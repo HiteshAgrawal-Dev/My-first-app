@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { asset } from '../lib/catalog'
 import { useMediaQuery } from '../lib/motion'
 import Icon from './Icon'
+import { LITE } from '../lib/perf'
 
 /** Campaign film: autoplays muted when on screen, pauses off screen, with a vertical cut for phones. */
 export default function FilmSection() {
@@ -10,7 +11,7 @@ export default function FilmSection() {
   const [failed, setFailed] = useState(false)
   const portrait = useMediaQuery('(max-aspect-ratio: 3/4)')
   useEffect(() => {
-    const el = v.current; if (!el) return
+    const el = v.current; if (!el || LITE) return
     const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) el.play().then(() => setPlaying(true)).catch(() => {}); else { el.pause(); setPlaying(false) } }, { threshold: 0.25 })
     io.observe(el)
     return () => io.disconnect()
@@ -20,7 +21,7 @@ export default function FilmSection() {
     <section className="film band-dark" aria-label="Nocturne 001 campaign film">
       <div className="film__frame" data-reveal>
         {!failed ? (
-          <video key={portrait ? 'v' : 'h'} ref={v} className="film__video" muted loop playsInline preload="metadata" poster={asset('/film/campaign-poster.webp')} onError={() => setFailed(true)}>
+          <video key={portrait ? 'v' : 'h'} ref={v} className="film__video" muted loop playsInline preload={LITE ? "none" : "metadata"} poster={asset('/film/campaign-poster.webp')} onError={() => setFailed(true)}>
             {portrait ? <source src={asset('/film/campaign-vertical.mp4')} type="video/mp4" /> : <><source src={asset('/film/campaign.webm')} type="video/webm" /><source src={asset('/film/campaign.mp4')} type="video/mp4" /></>}
           </video>
         ) : <div className="film__video film__video--fallback" />}

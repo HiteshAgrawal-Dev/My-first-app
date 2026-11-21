@@ -1,4 +1,4 @@
-import { lazy, Suspense, useLayoutEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import { products, byId, asset } from '../lib/catalog'
 import { gsap, ScrollTrigger, useReveal, useCountdown, reducedMotion, useMediaQuery } from '../lib/motion'
 import { useMoney } from '../lib/format'
@@ -9,6 +9,8 @@ import FilmSection from '../components/FilmSection'
 import Icon from '../components/Icon'
 import Img from '../components/Img'
 import SafeBoundary from '../components/SafeBoundary'
+import { LITE, whenIdle } from '../lib/perf'
+import { productImage } from '../lib/catalog'
 
 const HeroStage = lazy(() => import('../three/HeroStage'))
 
@@ -35,6 +37,8 @@ function Hero() {
   const open = useStore((s) => s.open)
   const hoodie = byId('vl-m-hoodie-01')!
   const [ci, setCi] = useState(1)
+  const [live3d, setLive3d] = useState(false)
+  useEffect(() => (LITE ? undefined : whenIdle(() => setLive3d(true), 2500)), [])
   useLayoutEffect(() => {
     if (!root.current || reducedMotion()) return
     const ctx = gsap.context(() => {
@@ -49,11 +53,14 @@ function Hero() {
     <section ref={root} className="hero" aria-label="Monolith 500 Hoodie">
       <h1 className="hero__word" aria-label="Véloura">{'VÉLOURA'.split('').map((c, i) => <span key={i} aria-hidden>{c}</span>)}</h1>
       <div className="hero__stage">
-        <SafeBoundary fallback={<div className="hero__poster"><Img src={asset('/renders/vl-m-hoodie-01.webp')} alt="" tint="#15121a" /></div>}>
-          <Suspense fallback={<div className="hero__poster" />}>
-            <HeroStage type="hoodie" color={hoodie.colors[ci].hex} progress={progress} />
-          </Suspense>
-        </SafeBoundary>
+        <div className={`hero__poster ${live3d ? 'is-hidden' : ''}`} aria-hidden><Img src={productImage(hoodie, ci)} alt="" tint={hoodie.colors[ci].hex} priority /></div>
+        {live3d && (
+          <SafeBoundary fallback={null}>
+            <Suspense fallback={null}>
+              <HeroStage type="hoodie" color={hoodie.colors[ci].hex} progress={progress} />
+            </Suspense>
+          </SafeBoundary>
+        )}
       </div>
       <div className="hero__copy wrap">
         <div className="hero__left">

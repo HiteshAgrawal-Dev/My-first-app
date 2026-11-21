@@ -22,6 +22,7 @@ import FitFinder from './overlays/FitFinder'
 import Concierge from './overlays/Concierge'
 import InfoPanel from './overlays/InfoPanel'
 import { byId } from './lib/catalog'
+import { LITE } from './lib/perf'
 
 const VelvetBackdrop = lazy(() => import('./three/VelvetBackdrop'))
 const TryOnOverlay = lazy(() => import('./overlays/TryOnOverlay'))
@@ -69,7 +70,7 @@ export default function App() {
   return (
     <>
       <button className="skip" onClick={() => { const m = document.getElementById("main"); m?.setAttribute("tabindex", "-1"); m?.focus() }}>Skip to content</button>
-      <SafeBoundary fallback={<div className="velvet-backdrop" />}><Suspense fallback={<div className="velvet-backdrop" />}><VelvetBackdrop tone={tone} /></Suspense></SafeBoundary>
+      {LITE ? <div className="velvet-backdrop" /> : <SafeBoundary fallback={<div className="velvet-backdrop" />}><Suspense fallback={<div className="velvet-backdrop" />}><VelvetBackdrop tone={tone} /></Suspense></SafeBoundary>}
       <Header route={route} />
       <main id="main" key={route.name + (route.param ?? '')} className="route-enter">{page}</main>
       <Footer />

@@ -160,7 +160,7 @@ th { font: 500 var(--t-xs) var(--f-mono); letter-spacing: 0.1em; text-transform:
 .hero__stage { position: absolute; inset: 0; z-index: 1; }
 .hero__canvas { width: 100%; height: 100%; }
 .hero__poster .img { width: 100%; height: 100%; }
-.hero__poster { position: absolute; inset: 12% 20% 20%; background: radial-gradient(closest-side, rgba(var(--accent-rgb), 0.12), transparent); }
+.hero__poster { position: absolute; inset: 16% 33% 14%; }
 .hero__copy { position: relative; z-index: 2; align-self: end; display: grid; gap: 28px; padding-bottom: 24px; pointer-events: none; }
 .hero__copy a, .hero__copy button { pointer-events: auto; }
 .hero__left { display: grid; gap: 18px; max-width: 520px; }
@@ -621,3 +621,16 @@ th { font: 500 var(--t-xs) var(--f-mono); letter-spacing: 0.1em; text-transform:
 .soon__list { display: grid; gap: 10px; }
 .soon__list li { display: grid; grid-template-columns: 28px 1fr; gap: 10px; color: var(--fg-2); font-size: var(--t-sm); }
 .soon__list .mono { color: var(--accent); padding-top: 2px; }
+
+/* ============ lite mode (low-end devices) ============ */
+.hero__poster { z-index: 1; transition: opacity 1.2s var(--ease); animation: heroFloat 7s ease-in-out infinite; }
+.hero__poster.is-hidden { opacity: 0; pointer-events: none; }
+@keyframes heroFloat { 50% { transform: translateY(-12px) rotate(-1deg); } }
+@media (max-width: 899px) { .hero__poster { inset: calc(var(--header-h) * 0.6) 14% auto; height: min(78vw, 54svh); } }
+.lite *, .lite *::before, .lite *::after { backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+.lite .header.is-scrolled, .lite .filters, .lite .bottombar { background: var(--bg); }
+.lite .velvet-backdrop { background: radial-gradient(120% 80% at 70% 0%, #f3f1ed 0%, var(--bg) 55%, var(--bg-2) 100%); }
+.lite .marquee__track, .lite .announce__track { animation-duration: 80s; }
+.lab__static { position: absolute; inset: 8%; display: grid; place-items: center; }
+.lab__static .img { position: absolute; inset: 0; }
+.lab__static .btn { position: relative; align-self: end; }
