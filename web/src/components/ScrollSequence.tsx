@@ -18,12 +18,14 @@ export default function ScrollSequence() {
   const imgs = useRef<HTMLImageElement[]>([])
   const [p, setP] = useState(0)
   const [ok, setOk] = useState(true)
+  const lastIdx = useRef(0)
+  const lastProg = useRef(0)
 
   useEffect(() => {
     let alive = true
     const first = new Image()
     first.onerror = () => alive && setOk(false)
-    imgs.current = Array.from({ length: FRAMES }, (_, i) => { const im = i === 0 ? first : new Image(); im.decoding = 'async'; im.src = src(i); return im })
+    imgs.current = Array.from({ length: FRAMES }, (_, i) => { const im = i === 0 ? first : new Image(); im.decoding = 'async'; im.src = src(i); if (i) im.onload = () => { if (Math.abs(i - lastIdx.current) < 3) draw(lastProg.current) }; return im })
     first.onload = () => draw(0)
     return () => { alive = false }
   }, [])
@@ -31,6 +33,7 @@ export default function ScrollSequence() {
   const draw = (prog: number) => {
     const c = canvas.current; if (!c) return
     const i = Math.min(FRAMES - 1, Math.round(prog * (FRAMES - 1)))
+    lastIdx.current = i; lastProg.current = prog
     let im = imgs.current[i]
     if (!im?.complete || !im.naturalWidth) { for (let k = i; k >= 0; k--) if (imgs.current[k]?.complete && imgs.current[k].naturalWidth) { im = imgs.current[k]; break } }
     if (!im?.naturalWidth) return
@@ -38,7 +41,7 @@ export default function ScrollSequence() {
     const dpr = Math.min(devicePixelRatio, 2)
     const w = c.clientWidth * dpr, h = c.clientHeight * dpr
     if (c.width !== w || c.height !== h) { c.width = w; c.height = h }
-    const s = Math.max(w / im.naturalWidth, h / im.naturalHeight) * 0.92
+    const s = Math.min(w / im.naturalWidth, h / im.naturalHeight) * 1.04
     const dw = im.naturalWidth * s, dh = im.naturalHeight * s
     ctx.clearRect(0, 0, w, h)
     ctx.drawImage(im, (w - dw) / 2, (h - dh) / 2, dw, dh)

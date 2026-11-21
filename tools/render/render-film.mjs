@@ -34,7 +34,7 @@ async function frames(query, w, h, n, timeOf, dir, ext = 'jpg') {
 const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'veloura-film-'))
 const N = Number(flags.frames ?? DURATION * FPS)
 // subtle vignette + filmic grain at encode time
-const grade = 'vignette=angle=PI/4.6,noise=alls=5:allf=t,format=yuv420p'
+const grade = 'eq=gamma=1.18:brightness=0.015:saturation=1.06,vignette=angle=PI/4.4,noise=alls=4:allf=t,format=yuv420p'
 
 if (what.includes('wide') || what.includes('poster')) {
   const dir = path.join(tmp, 'wide')
@@ -45,8 +45,8 @@ if (what.includes('wide') || what.includes('poster')) {
   }
   // poster from a hand-picked moment
   const pdir = path.join(tmp, 'poster')
-  await frames('mode=film&aspect=wide', 1600, 900, 1, () => Number(flags.posterT ?? 1.6), pdir, 'png')
-  ff('-i', path.join(pdir, 'f0000.png'), '-vf', 'vignette=angle=PI/4.6', '-c:v', 'libwebp', '-quality', '86', path.join(OUT, 'campaign-poster.webp'))
+  await frames('mode=film&aspect=wide', 1600, 900, 1, () => Number(flags.posterT ?? 0.25), pdir, 'png')
+  ff('-i', path.join(pdir, 'f0000.png'), '-vf', 'eq=gamma=1.18:brightness=0.015:saturation=1.06,vignette=angle=PI/4.4', '-c:v', 'libwebp', '-quality', '86', path.join(OUT, 'campaign-poster.webp'))
 }
 
 if (what.includes('vertical')) {

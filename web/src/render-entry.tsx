@@ -57,12 +57,16 @@ function FitCamera({ target, fill = 0.82, yBias = 0, xShift = 0 }: { target: THR
     const aspect = size.width / size.height
     const vfov = THREE.MathUtils.degToRad(camera.fov)
     const hfov = 2 * Math.atan(Math.tan(vfov / 2) * aspect)
+    // xShift: garment centre offset as a fraction of the visible half-width (+ = garment to the right)
+    const f = Math.min(0.6, Math.abs(xShift))
     const dH = (s.y / fill) / 2 / Math.tan(vfov / 2)
-    const dW = (s.x / fill) / 2 / Math.tan(hfov / 2)
+    const dW = ((s.x / fill) / 2 / (1 - f)) / Math.tan(hfov / 2)
     const dist = Math.max(dH, dW) + s.z / 2
+    const halfW = (dist - s.z / 2) * Math.tan(hfov / 2)
+    const off = Math.sign(xShift) * f * halfW
     const elev = 0.06
-    camera.position.set(c.x - xShift * dist, c.y + yBias + dist * elev, c.z + dist)
-    camera.lookAt(c.x - xShift * dist, c.y + yBias, c.z)
+    camera.position.set(c.x - off, c.y + yBias + dist * elev, c.z + dist)
+    camera.lookAt(c.x - off, c.y + yBias, c.z)
     camera.near = dist * 0.05
     camera.far = dist * 10
     camera.updateProjectionMatrix()
@@ -105,10 +109,26 @@ function CategoryShot({ type, color, accent, variant, fabric }: { type: GarmentT
       <color attach="background" args={['#120c12']} />
       <fog attach="fog" args={['#120c12', 3, 9]} />
       <VelvetDrape />
+      <CurtainGlow />
       <GarmentStage shadowY={-h / 2 - 0.08} shadowOpacity={0.6} mood="dramatic">
         <primitive object={garment} />
       </GarmentStage>
-      <FitCamera target={garment} fill={type === 'cargo' ? 0.86 : 0.72} xShift={-0.12} />
+      <FitCamera target={garment} fill={type === 'cargo' ? 0.86 : 0.74} xShift={0.3} />
+    </>
+  )
+}
+
+/** Champagne pool of light on the velvet behind the garment. */
+function CurtainGlow() {
+  const target = useMemo(() => {
+    const o = new THREE.Object3D()
+    o.position.set(0.15, 0.25, -1.6)
+    return o
+  }, [])
+  return (
+    <>
+      <primitive object={target} />
+      <spotLight position={[-0.6, 2.6, 2.2]} target={target} angle={0.42} penumbra={1} intensity={90} decay={1.2} color="#d9b98c" />
     </>
   )
 }
@@ -145,6 +165,7 @@ function App() {
         shadows
         gl={{ antialias: true, preserveDrawingBuffer: true, alpha: false, toneMapping: THREE.NeutralToneMapping }}
         camera={{ fov: mode === 'seq' ? 28 : 30, near: 0.05, far: 60, position: [0, 0, 4] }}
+        onCreated={({ gl }) => { if (mode === 'film') gl.toneMappingExposure = 1.3 }}
       >
         {mode === 'film' ? <FilmScene time={time} vertical={q.get('aspect') === 'vertical'} /> : <SeqScene time={time} />}
         <FrameDriver fn={(t) => { time.t = t }} />

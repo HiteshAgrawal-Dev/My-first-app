@@ -20,7 +20,8 @@ function Rig({ type, color, progress }: { type: string; color: string; progress:
     g.current.rotation.y = THREE.MathUtils.damp(g.current.rotation.y, targetY, 4, dt)
     g.current.rotation.x = THREE.MathUtils.damp(g.current.rotation.x, mouse.current.y * 0.12, 4, dt)
     g.current.position.y = THREE.MathUtils.damp(g.current.position.y, -p * 1.2, 5, dt)
-    const s = 0.86 - p * 0.2
+    const base = state.size.width / state.size.height < 0.9 ? 1.3 : 0.86
+    const s = base - p * 0.2
     g.current.scale.setScalar(THREE.MathUtils.damp(g.current.scale.x, s, 5, dt))
     state.camera.position.x = THREE.MathUtils.damp(state.camera.position.x, mouse.current.x * 0.3, 2, dt)
     state.camera.lookAt(0, 0, 0)

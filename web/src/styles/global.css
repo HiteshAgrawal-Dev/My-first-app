@@ -30,7 +30,7 @@ ul, ol { margin: 0; padding: 0; list-style: none; }
 .hide-sm { display: none; }
 @media (min-width: 720px) { .hide-sm { display: inline-flex; } }
 .page { position: relative; z-index: 1; min-height: 70vh; }
-.route-enter { animation: routeIn 0.9s var(--ease) both; }
+.route-enter { animation: routeIn 0.9s var(--ease); } /* no fill-mode: a lingering transform would break ScrollTrigger pins */
 @keyframes routeIn { from { opacity: 0; transform: translateY(14px); } }
 .section { padding-block: clamp(64px, 10vw, 140px); }
 .section--tight { padding-block: 24px 96px; }
@@ -185,7 +185,12 @@ th { font: 500 var(--t-xs) var(--f-mono); letter-spacing: 0.1em; text-transform:
   .hero__scroll { display: flex; }
   .hero__word { top: 7%; }
 }
-@media (max-width: 899px) { .hero__stage { bottom: 34%; } .hero__word { top: 8%; } }
+@media (max-width: 899px) {
+  .hero { min-height: 0; padding-top: calc(var(--header-h) + min(64vw, 46svh)); }
+  .hero__stage { top: calc(var(--header-h) * 0.4); bottom: auto; height: min(84vw, 58svh); }
+  .hero__word { top: calc(var(--header-h) * 0.55); }
+  .hero__copy { padding-top: 8px; }
+}
 
 /* ============ marquee ============ */
 .marquee { position: relative; z-index: 1; overflow: hidden; border-block: 1px solid var(--line); background: rgba(var(--bg-rgb), 0.5); backdrop-filter: blur(6px); }

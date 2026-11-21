@@ -170,7 +170,7 @@ function VelvetFloor({ material, timeRef }: { material: THREE.Material; timeRef?
     pos.needsUpdate = true
     geo.computeVertexNormals()
   })
-  return <mesh geometry={geo} material={material} position={[0, -1.25, 0]} receiveShadow />
+  return <mesh geometry={geo} material={material} position={[0, -1.9, 0]} receiveShadow />
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ function VelvetFloor({ material, timeRef }: { material: THREE.Material; timeRef?
 interface FilmGarment { type: GarmentType; color: string; variant?: GarmentVariant; fabric?: FabricKind; pos: [number, number, number]; rot: number; scale?: number }
 
 const CAST: FilmGarment[] = [
-  { type: 'hoodie', color: '#3a1f3d', fabric: 'velour', pos: [0, 0.02, 0], rot: 0, scale: 1.3 },
+  { type: 'hoodie', color: '#3a1f3d', fabric: 'velour', pos: [0, 0.02, 0], rot: 0, scale: 1.12 },
   { type: 'puffer', color: '#c8873a', fabric: 'iridescent', pos: [1.85, 0.72, 0.55], rot: -1.2 },
   { type: 'corset', color: '#5c1428', fabric: 'silkVelvet', pos: [0.75, -0.5, 1.8], rot: 0.3 },
   { type: 'blazer', color: '#f1ebe1', fabric: 'gabardine', pos: [-1.75, 0.62, 1.05], rot: 0.9 },
@@ -196,7 +196,7 @@ export function FilmScene({ time, vertical = false }: { time: TimeRef; vertical?
         const g = buildGarment(c.type, { color: c.color, variant: c.variant, fabric: c.fabric, detail: 'high' })
         const holder = new THREE.Group()
         holder.add(g)
-        holder.position.set(c.pos[0] * 0.88, c.pos[1], c.pos[2] * 0.88)
+        holder.position.set(c.pos[0] * 1.95, c.pos[1], c.pos[2] * 1.95)
         holder.scale.setScalar(c.scale ?? 1)
         return { c, holder, g }
       }),
@@ -221,12 +221,12 @@ export function FilmScene({ time, vertical = false }: { time: TimeRef; vertical?
     const p = (t / FILM_DURATION) * TAU
     // camera: one full, slow revolution per loop, breathing in and out between the garments
     const az = p + 0.35
-    const R = vertical ? 5.2 + 0.3 * Math.cos(p * 2) : 4.35 + 0.3 * Math.cos(p * 2)
+    const R = vertical ? 3.5 + 0.15 * Math.cos(p * 2) : 3.15 + 0.2 * Math.cos(p * 2)
     const camY = 0.22 + 0.16 * Math.sin(p) + 0.05 * Math.sin(p * 3)
     camera.position.set(Math.sin(az) * R, camY, Math.cos(az) * R)
-    const look = new THREE.Vector3(0.15 * Math.sin(p * 2), 0.08, 0.15 * Math.cos(p * 2))
+    const look = new THREE.Vector3(0, 0.1, 0)
     camera.lookAt(look)
-    camera.fov = vertical ? 42 : 27
+    camera.fov = vertical ? 40 : 30
     camera.updateProjectionMatrix()
 
     for (const { c, holder, g } of garments) {
@@ -260,7 +260,7 @@ export function FilmScene({ time, vertical = false }: { time: TimeRef; vertical?
       <color attach="background" args={['#0b070b']} />
       <fogExp2 attach="fog" args={['#0e0a0e', 0.075]} />
       <hemisphereLight args={['#5a4250', '#0a0609', 0.25]} />
-      <directionalLight position={[-2.5, 4.5, 2.5]} intensity={1.6} color="#fff0de" castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0008} shadow-normalBias={0.03} shadow-camera-left={-3} shadow-camera-right={3} shadow-camera-top={3} shadow-camera-bottom={-3} />
+      <directionalLight position={[-2.5, 4.5, 2.5]} intensity={2.3} color="#fff0de" castShadow shadow-mapSize={[2048, 2048]} shadow-bias={-0.0008} shadow-normalBias={0.03} shadow-camera-left={-3} shadow-camera-right={3} shadow-camera-top={3} shadow-camera-bottom={-3} />
       <directionalLight position={[3, 2, -3]} intensity={2.4} color={CHAMPAGNE} />
       <directionalLight position={[-3, 1.5, -2.5]} intensity={1.2} color="#c9a7c4" />
       <spotLight ref={sweepA} position={[0, 4.2, 0]} angle={0.32} penumbra={0.8} intensity={60} distance={0} decay={1.4} color={CHAMPAGNE} />
@@ -269,7 +269,7 @@ export function FilmScene({ time, vertical = false }: { time: TimeRef; vertical?
       <primitive object={targetB} />
       <mesh ref={beamA} geometry={beamGeo} material={beamMatA} frustumCulled={false} />
       <mesh ref={beamB} geometry={beamGeo} material={beamMatB} frustumCulled={false} />
-      <Environment resolution={128} frames={1} environmentIntensity={0.45}>
+      <Environment resolution={128} frames={1} environmentIntensity={0.6}>
         <color attach="background" args={['#0b070b']} />
         <Lightformer form="rect" intensity={2} color="#fff1e0" position={[-2, 3, 2]} scale={[3, 2, 1]} target={[0, 0, 0]} />
         <Lightformer form="rect" intensity={3} color={CHAMPAGNE} position={[3, 1, -2]} scale={[0.6, 4, 1]} target={[0, 0, 0]} />
