@@ -1,0 +1,985 @@
+{
+ "products": [
+  {
+   "id": "vl-m-hoodie-01",
+   "name": "Monolith 500 Hoodie",
+   "dept": "men",
+   "garment": "hoodie",
+   "price": 7990,
+   "compareAt": 9490,
+   "colors": [
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Bone",
+     "hex": "#e6dccb"
+    },
+    {
+     "name": "Oxblood",
+     "hex": "#5c1428"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": 500,
+   "material": "500GSM organic loopback cotton, brushed velour interior",
+   "fit": "Boxy",
+   "description": "Our flagship heavyweight. Dropped shoulders, double-layer architectural hood and a 3-panel sculpted body that holds its shape all day.",
+   "badge": "Bestseller",
+   "rating": 4.9,
+   "reviews": 842,
+   "tags": [
+    "hoodie",
+    "heavyweight",
+    "500gsm",
+    "organic"
+   ],
+   "drop": null,
+   "image": "/renders/vl-m-hoodie-01.png",
+   "images": [
+    "/renders/vl-m-hoodie-01.png",
+    "/renders/vl-m-hoodie-01-back.png",
+    "/renders/vl-m-hoodie-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-m-tee-01",
+   "name": "Kinetic Heavy Tee",
+   "dept": "men",
+   "garment": "tee",
+   "price": 3490,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Bone",
+     "hex": "#e6dccb"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Tokyo Steel",
+     "hex": "#7d8796"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": 320,
+   "material": "320GSM combed organic cotton jersey",
+   "fit": "Boxy",
+   "description": "Ribbed mock-neck heavyweight tee with a cropped boxy block and side vents. Pre-shrunk, zero twist.",
+   "badge": null,
+   "rating": 4.8,
+   "reviews": 516,
+   "tags": [
+    "tee",
+    "heavyweight",
+    "organic"
+   ],
+   "drop": null,
+   "image": "/renders/vl-m-tee-01.png",
+   "images": [
+    "/renders/vl-m-tee-01.png",
+    "/renders/vl-m-tee-01-back.png",
+    "/renders/vl-m-tee-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-m-cargo-01",
+   "name": "Parachute Cargo 02",
+   "dept": "men",
+   "garment": "cargo",
+   "price": 6490,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Tokyo Steel",
+     "hex": "#7d8796"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Kyoto Moss",
+     "hex": "#4b5640"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": 180,
+   "material": "Water-repellent ripstop nylon, cotton mesh lining",
+   "fit": "Relaxed",
+   "description": "Eight-pocket parachute cargo with toggle hems and articulated knees. Packs into its own back pocket.",
+   "badge": "New",
+   "rating": 4.7,
+   "reviews": 301,
+   "tags": [
+    "cargo",
+    "parachute",
+    "pants",
+    "ripstop"
+   ],
+   "drop": null,
+   "image": "/renders/vl-m-cargo-01.png",
+   "images": [
+    "/renders/vl-m-cargo-01.png",
+    "/renders/vl-m-cargo-01-back.png",
+    "/renders/vl-m-cargo-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-m-puffer-01",
+   "name": "Strata Puffer",
+   "dept": "men",
+   "garment": "puffer",
+   "price": 15990,
+   "compareAt": 18990,
+   "colors": [
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Shibuya Cobalt",
+     "hex": "#26407a"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 1,
+    "S": 3,
+    "M": 5,
+    "L": 2,
+    "XL": 1,
+    "XXL": 0
+   },
+   "gsm": null,
+   "material": "Recycled nylon shell, 650-fill responsible down",
+   "fit": "Oversized",
+   "description": "Horizontally baffled puffer with a funnel collar and storm placket. Rated to -12°C.",
+   "badge": "Limited",
+   "rating": 4.9,
+   "reviews": 188,
+   "tags": [
+    "puffer",
+    "jacket",
+    "outerwear",
+    "winter"
+   ],
+   "drop": null,
+   "image": "/renders/vl-m-puffer-01.png",
+   "images": [
+    "/renders/vl-m-puffer-01.png",
+    "/renders/vl-m-puffer-01-back.png",
+    "/renders/vl-m-puffer-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-m-blazer-01",
+   "name": "Deconstructed Blazer",
+   "dept": "men",
+   "garment": "blazer",
+   "price": 13490,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Bone",
+     "hex": "#e6dccb"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": null,
+   "material": "Japanese wool-tencel twill, unlined",
+   "fit": "Relaxed",
+   "description": "Unstructured single-breasted blazer with raw-cut lapels. Made to be thrown over a hoodie.",
+   "badge": null,
+   "rating": 4.6,
+   "reviews": 97,
+   "tags": [
+    "blazer",
+    "tailoring",
+    "wool"
+   ],
+   "drop": null,
+   "image": "/renders/vl-m-blazer-01.png",
+   "images": [
+    "/renders/vl-m-blazer-01.png",
+    "/renders/vl-m-blazer-01-back.png",
+    "/renders/vl-m-blazer-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-m-hoodie-02",
+   "name": "Shibuya Zip Hoodie",
+   "dept": "men",
+   "garment": "hoodie",
+   "price": 8490,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Shibuya Cobalt",
+     "hex": "#26407a"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": 450,
+   "material": "450GSM French terry, two-way Riri zip",
+   "fit": "Regular",
+   "description": "Full-zip heavyweight with a scuba hood and hidden media pocket. Built for late trains.",
+   "badge": null,
+   "rating": 4.8,
+   "reviews": 264,
+   "tags": [
+    "hoodie",
+    "zip",
+    "heavyweight"
+   ],
+   "drop": null,
+   "image": "/renders/vl-m-hoodie-02.png",
+   "images": [
+    "/renders/vl-m-hoodie-02.png",
+    "/renders/vl-m-hoodie-02-back.png",
+    "/renders/vl-m-hoodie-02-side.png"
+   ]
+  },
+  {
+   "id": "vl-w-corset-01",
+   "name": "Sculpted Corset Blazer",
+   "dept": "women",
+   "garment": "corset",
+   "price": 12990,
+   "compareAt": 14990,
+   "colors": [
+    {
+     "name": "Oxblood",
+     "hex": "#5c1428"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Atelier Ivory",
+     "hex": "#f1ebe1"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": null,
+   "material": "Stretch wool-blend crepe, boned bodice",
+   "fit": "Sculpted",
+   "description": "A tailored blazer with an integrated corset waist. Six spiral-steel bones shape the body without restricting movement.",
+   "badge": "Signature",
+   "rating": 4.9,
+   "reviews": 402,
+   "tags": [
+    "corset",
+    "blazer",
+    "tailoring"
+   ],
+   "drop": null,
+   "image": "/renders/vl-w-corset-01.png",
+   "images": [
+    "/renders/vl-w-corset-01.png",
+    "/renders/vl-w-corset-01-back.png",
+    "/renders/vl-w-corset-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-w-hoodie-01",
+   "name": "Cocoon 500 Hoodie",
+   "dept": "women",
+   "garment": "hoodie",
+   "price": 7990,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Atelier Ivory",
+     "hex": "#f1ebe1"
+    },
+    {
+     "name": "Nocturne Plum",
+     "hex": "#3a1f3d"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": 500,
+   "material": "500GSM organic loopback cotton",
+   "fit": "Oversized",
+   "description": "A cropped cocoon silhouette with balloon sleeves and a deep double hood.",
+   "badge": "Bestseller",
+   "rating": 4.9,
+   "reviews": 655,
+   "tags": [
+    "hoodie",
+    "heavyweight",
+    "500gsm",
+    "cropped"
+   ],
+   "drop": null,
+   "image": "/renders/vl-w-hoodie-01.png",
+   "images": [
+    "/renders/vl-w-hoodie-01.png",
+    "/renders/vl-w-hoodie-01-back.png",
+    "/renders/vl-w-hoodie-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-w-cargo-01",
+   "name": "Parachute Cargo W",
+   "dept": "women",
+   "garment": "cargo",
+   "price": 6290,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Bone",
+     "hex": "#e6dccb"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Saffron Dust",
+     "hex": "#c8873a"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": 180,
+   "material": "Water-repellent ripstop nylon",
+   "fit": "Relaxed",
+   "description": "Low-rise parachute cargo with drawcord waist and bungee hems. Wear it long or ruched.",
+   "badge": "New",
+   "rating": 4.8,
+   "reviews": 377,
+   "tags": [
+    "cargo",
+    "parachute",
+    "pants"
+   ],
+   "drop": null,
+   "image": "/renders/vl-w-cargo-01.png",
+   "images": [
+    "/renders/vl-w-cargo-01.png",
+    "/renders/vl-w-cargo-01-back.png",
+    "/renders/vl-w-cargo-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-w-tee-01",
+   "name": "Second-Skin Baby Tee",
+   "dept": "women",
+   "garment": "tee",
+   "price": 2990,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Atelier Ivory",
+     "hex": "#f1ebe1"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    },
+    {
+     "name": "Oxblood",
+     "hex": "#5c1428"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": 220,
+   "material": "220GSM organic cotton-modal rib",
+   "fit": "Fitted",
+   "description": "A cropped baby tee in a dense rib that holds its line. Pairs with every cargo we make.",
+   "badge": null,
+   "rating": 4.7,
+   "reviews": 489,
+   "tags": [
+    "tee",
+    "rib",
+    "cropped"
+   ],
+   "drop": null,
+   "image": "/renders/vl-w-tee-01.png",
+   "images": [
+    "/renders/vl-w-tee-01.png",
+    "/renders/vl-w-tee-01-back.png",
+    "/renders/vl-w-tee-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-w-puffer-01",
+   "name": "Halo Cropped Puffer",
+   "dept": "women",
+   "garment": "puffer",
+   "price": 14490,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Atelier Ivory",
+     "hex": "#f1ebe1"
+    },
+    {
+     "name": "Nocturne Plum",
+     "hex": "#3a1f3d"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": null,
+   "material": "Recycled satin-sheen nylon, 650-fill down",
+   "fit": "Cropped",
+   "description": "A cropped puffer with an exaggerated halo collar. Light enough for Mumbai winters and warm enough for Paris.",
+   "badge": null,
+   "rating": 4.8,
+   "reviews": 143,
+   "tags": [
+    "puffer",
+    "cropped",
+    "outerwear"
+   ],
+   "drop": null,
+   "image": "/renders/vl-w-puffer-01.png",
+   "images": [
+    "/renders/vl-w-puffer-01.png",
+    "/renders/vl-w-puffer-01-back.png",
+    "/renders/vl-w-puffer-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-w-blazer-01",
+   "name": "Ivory Atelier Blazer",
+   "dept": "women",
+   "garment": "blazer",
+   "price": 13990,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Atelier Ivory",
+     "hex": "#f1ebe1"
+    },
+    {
+     "name": "Onyx Velour",
+     "hex": "#15121a"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 4,
+    "S": 9,
+    "M": 14,
+    "L": 11,
+    "XL": 6,
+    "XXL": 2
+   },
+   "gsm": null,
+   "material": "Italian wool gabardine, cupro lining",
+   "fit": "Oversized",
+   "description": "An oversized double-breasted blazer with strong shoulders and a long line.",
+   "badge": null,
+   "rating": 4.7,
+   "reviews": 121,
+   "tags": [
+    "blazer",
+    "tailoring",
+    "oversized"
+   ],
+   "drop": null,
+   "image": "/renders/vl-w-blazer-01.png",
+   "images": [
+    "/renders/vl-w-blazer-01.png",
+    "/renders/vl-w-blazer-01-back.png",
+    "/renders/vl-w-blazer-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-d-hoodie-01",
+   "name": "NOCTURNE 001 Hoodie",
+   "dept": "drops",
+   "garment": "hoodie",
+   "price": 9990,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Nocturne Plum",
+     "hex": "#3a1f3d"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 0,
+    "S": 2,
+    "M": 3,
+    "L": 1,
+    "XL": 1,
+    "XXL": 0
+   },
+   "gsm": 500,
+   "material": "500GSM velour-faced cotton, tonal 3D embroidery",
+   "fit": "Boxy",
+   "description": "Drop 001. Crushed-velour face, tonal puff embroidery and numbered woven label. 300 pieces worldwide.",
+   "badge": "Drop 001",
+   "rating": 5.0,
+   "reviews": 73,
+   "tags": [
+    "hoodie",
+    "limited",
+    "drop",
+    "velour"
+   ],
+   "drop": "2026-11-28T18:00:00+05:30",
+   "image": "/renders/vl-d-hoodie-01.png",
+   "images": [
+    "/renders/vl-d-hoodie-01.png",
+    "/renders/vl-d-hoodie-01-back.png",
+    "/renders/vl-d-hoodie-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-d-puffer-01",
+   "name": "SAFFRON STRATA Puffer",
+   "dept": "drops",
+   "garment": "puffer",
+   "price": 17990,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Saffron Dust",
+     "hex": "#c8873a"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 0,
+    "S": 1,
+    "M": 2,
+    "L": 2,
+    "XL": 0,
+    "XXL": 0
+   },
+   "gsm": null,
+   "material": "Iridescent recycled nylon, 800-fill down",
+   "fit": "Oversized",
+   "description": "A Mumbai-born colourway of the Strata. Iridescent shell that shifts from saffron to copper.",
+   "badge": "Drop 002",
+   "rating": 5.0,
+   "reviews": 41,
+   "tags": [
+    "puffer",
+    "limited",
+    "drop"
+   ],
+   "drop": "2026-12-05T18:00:00+05:30",
+   "image": "/renders/vl-d-puffer-01.png",
+   "images": [
+    "/renders/vl-d-puffer-01.png",
+    "/renders/vl-d-puffer-01-back.png",
+    "/renders/vl-d-puffer-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-d-corset-01",
+   "name": "OXBLOOD Corset Capsule",
+   "dept": "drops",
+   "garment": "corset",
+   "price": 15490,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Oxblood",
+     "hex": "#5c1428"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 1,
+    "S": 1,
+    "M": 1,
+    "L": 0,
+    "XL": 0,
+    "XXL": 0
+   },
+   "gsm": null,
+   "material": "Silk-velvet corset blazer, hand-finished",
+   "fit": "Sculpted",
+   "description": "Silk velvet, hand-set bones, 150 pieces. The piece our Paris atelier was built for.",
+   "badge": "Drop 003",
+   "rating": 5.0,
+   "reviews": 29,
+   "tags": [
+    "corset",
+    "limited",
+    "drop",
+    "velvet"
+   ],
+   "drop": "2026-12-12T18:00:00+05:30",
+   "image": "/renders/vl-d-corset-01.png",
+   "images": [
+    "/renders/vl-d-corset-01.png",
+    "/renders/vl-d-corset-01-back.png",
+    "/renders/vl-d-corset-01-side.png"
+   ]
+  },
+  {
+   "id": "vl-d-cargo-01",
+   "name": "MOSS CIRCUIT Cargo",
+   "dept": "drops",
+   "garment": "cargo",
+   "price": 7490,
+   "compareAt": null,
+   "colors": [
+    {
+     "name": "Kyoto Moss",
+     "hex": "#4b5640"
+    }
+   ],
+   "sizes": [
+    "XS",
+    "S",
+    "M",
+    "L",
+    "XL",
+    "XXL"
+   ],
+   "stock": {
+    "XS": 2,
+    "S": 3,
+    "M": 2,
+    "L": 2,
+    "XL": 1,
+    "XXL": 0
+   },
+   "gsm": 180,
+   "material": "Ripstop with reflective circuit tape",
+   "fit": "Relaxed",
+   "description": "Kyoto moss ripstop with reflective circuit taping that lights up under flash.",
+   "badge": "Drop 001",
+   "rating": 4.9,
+   "reviews": 58,
+   "tags": [
+    "cargo",
+    "limited",
+    "drop",
+    "reflective"
+   ],
+   "drop": "2026-11-28T18:00:00+05:30",
+   "image": "/renders/vl-d-cargo-01.png",
+   "images": [
+    "/renders/vl-d-cargo-01.png",
+    "/renders/vl-d-cargo-01-back.png",
+    "/renders/vl-d-cargo-01-side.png"
+   ]
+  }
+ ],
+ "promos": [
+  {
+   "code": "ATELIER10",
+   "type": "percent",
+   "value": 10,
+   "label": "10% off your bag",
+   "minSubtotal": 0
+  },
+  {
+   "code": "PREPAID5",
+   "type": "percent",
+   "value": 5,
+   "label": "Extra 5% off on UPI / prepaid",
+   "minSubtotal": 0,
+   "requiresPrepaid": true
+  },
+  {
+   "code": "FIRSTFIT",
+   "type": "flat",
+   "value": 1000,
+   "label": "₹1,000 off your first order over ₹7,000",
+   "minSubtotal": 7000
+  }
+ ],
+ "sizeChart": {
+  "unit": "cm",
+  "rows": [
+   {
+    "size": "XS",
+    "chest": [
+     82,
+     88
+    ],
+    "height": [
+     155,
+     163
+    ],
+    "shoulder": 40
+   },
+   {
+    "size": "S",
+    "chest": [
+     88,
+     94
+    ],
+    "height": [
+     160,
+     168
+    ],
+    "shoulder": 43
+   },
+   {
+    "size": "M",
+    "chest": [
+     94,
+     100
+    ],
+    "height": [
+     166,
+     175
+    ],
+    "shoulder": 46
+   },
+   {
+    "size": "L",
+    "chest": [
+     100,
+     108
+    ],
+    "height": [
+     172,
+     181
+    ],
+    "shoulder": 49
+   },
+   {
+    "size": "XL",
+    "chest": [
+     108,
+     116
+    ],
+    "height": [
+     178,
+     187
+    ],
+    "shoulder": 52
+   },
+   {
+    "size": "XXL",
+    "chest": [
+     116,
+     126
+    ],
+    "height": [
+     184,
+     195
+    ],
+    "shoulder": 55
+   }
+  ]
+ },
+ "shipping": {
+  "freeAbove": 4999,
+  "standardFee": 199,
+  "expressFee": 349,
+  "codFee": 99,
+  "exchangeDays": 7,
+  "currencies": {
+   "INR": 1,
+   "EUR": 0.0108,
+   "JPY": 1.79,
+   "USD": 0.0118
+  }
+ }
+}

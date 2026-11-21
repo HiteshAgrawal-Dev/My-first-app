@@ -1,0 +1,37 @@
+/* VÉLOURA — "velvet night atelier": a dark, deliberately single-theme world.
+   Layout concept: editorial couture spreads (Paris) set on a precise technical grid (Tokyo). */
+:root {
+  color-scheme: dark;
+  --ink: #0e0a0e;          /* page ground: aubergine-black, never pure black */
+  --velvet: #1a1119;       /* raised surfaces */
+  --velvet-2: #241823;
+  --plum: #3a1f3d;
+  --oxblood: #5c1428;
+  --bone: #e6dccb;         /* primary text */
+  --bone-dim: #b3a898;     /* secondary text (AA on ink) */
+  --bone-faint: #7d7368;
+  --champagne: #d9b98c;    /* the single accent */
+  --champagne-hi: #f0d7ad;
+  --steel: #8e97a6;
+  --ok: #8fbf9a;
+  --warn: #e0a15c;
+  --line: rgba(230, 220, 203, 0.13);
+  --line-strong: rgba(230, 220, 203, 0.28);
+  --glass: rgba(20, 13, 19, 0.62);
+
+  --f-display: 'Bodoni Moda', 'Didot', 'Bodoni 72', Georgia, serif;
+  --f-ui: 'Manrope', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --f-mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', Menlo, monospace;
+
+  /* type scale (1.25 minor third, fluid at the top) */
+  --t-xs: 0.72rem; --t-sm: 0.84rem; --t-md: 1rem; --t-lg: 1.25rem; --t-xl: 1.6rem;
+  --t-2xl: clamp(2rem, 4vw, 3rem); --t-3xl: clamp(2.6rem, 6.5vw, 5.4rem); --t-hero: clamp(3.6rem, 15vw, 15rem);
+
+  --gutter: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  --wrap: 1440px;
+  --radius: 2px;
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+  --header-h: 64px;
+}
+@media (min-width: 900px) { :root { --gutter: max(40px, env(safe-area-inset-left, 0px)); --gutter-r: max(40px, env(safe-area-inset-right, 0px)); --header-h: 76px; } }
